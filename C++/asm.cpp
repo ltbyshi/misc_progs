@@ -1,16 +1,20 @@
 #include <stdio.h>
 
 const char* msg = "Hello world!";
+typedef void (*FPTR)(void);
+FPTR p = (FPTR)0x7ffff7df4843;
+
 int main()
 {
-    while(true)
+   for(int i = 0; i < 1000000; i ++)
     {
-        asm("sysenter");
-        //asm("leave");
-        //asm("call main");
-        //asm("leave");
-        //asm("ret");
+        asm("mov %0,%%eax\n"
+                "syscall\n"
+                "cmp $0xfffffffffffff001,%%rax\n"
+                : 
+                : "r"(i), "r"(p)
+                :);
     }
-    asm("cli");
+    // asm("cli");
     return 0;
 }

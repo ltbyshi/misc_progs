@@ -2,8 +2,8 @@
 
 Targets=$(basename -a -s .cpp *.cpp | tr '\n' ' ')
 echo -e 'CXX=g++' > Makefile
-echo -e 'CFLAGS=-g -Wall -std=c++11' >> Makefile
-echo -e 'LDFLAGS=-lm' >> Makefile
+echo -e 'CFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions' >> Makefile
+echo -e 'LDFLAGS=-lm -lpthread' >> Makefile
 echo -e "BINS=bin \$(addprefix bin/,$Targets)\n" >> Makefile
 echo -e 'all: $(BINS)\n' >> Makefile
 echo -e '.PHONY: all clean\n' >> Makefile

@@ -4,7 +4,7 @@
 Targets=$(basename -a -s .c *.c | tr '\n' ' ')
 echo -e 'CXX=gcc' > Makefile
 echo -e 'CFLAGS=-g -Wall' >> Makefile
-echo -e 'LDFLAGS=-lm' >> Makefile
+echo -e 'LDFLAGS=-lm -lrt' >> Makefile
 echo -e "BINS=bin \$(addprefix bin/,$Targets)\n" >> Makefile
 echo -e 'all: $(BINS)\n' >> Makefile
 echo -e '.PHONY: all clean\n' >> Makefile

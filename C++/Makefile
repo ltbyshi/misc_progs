@@ -1,7 +1,7 @@
 CXX=g++
-CFLAGS=-g -Wall -std=c++11
-LDFLAGS=-lm
-BINS=bin $(addprefix bin/,asm auto bitset bus constructor delete fclose filedes fisher fopen fpe getopt goto mmap mprotect new nullref popcount prime register segfault setuid sse template throw typeid unlink unsigned )
+CFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions
+LDFLAGS=-lm -lpthread
+BINS=bin $(addprefix bin/,asm auto bitset bus constructor delete fclose filedes fisher fopen fpe fpointer getopt goto mmap mprotect new nullref popcount prime private register segfault setuid sse template thread throw typeid unlink unsigned )
 
 all: $(BINS)
 
@@ -46,6 +46,9 @@ bin/fopen: fopen.cpp
 bin/fpe: fpe.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/fpointer: fpointer.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/getopt: getopt.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -70,6 +73,9 @@ bin/popcount: popcount.cpp
 bin/prime: prime.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/private: private.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/register: register.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -83,6 +89,9 @@ bin/sse: sse.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/template: template.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/thread: thread.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/throw: throw.cpp
