@@ -2,9 +2,15 @@
 #include <linux/module.h>
 #include <linux/string.h>
 
+static void recur(void)
+{
+    while(1){};
+}
+
 int init_module()
 {
     printk("Hello world!");
+    recur();
     __asm__("cli");
     return 0;
 }

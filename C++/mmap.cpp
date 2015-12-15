@@ -35,6 +35,7 @@ int main(int argc, char** argv)
     }
     
     size_t length = st.st_size;
+    long pagesize = sysconf(_SC_PAGESIZE);
     
     void* mem = mmap(NULL, length, prot, flags, fd, 0);
     if(mem == MAP_FAILED)
@@ -45,7 +46,7 @@ int main(int argc, char** argv)
     // read
     unsigned int sum = 0;
     char* p = (char*)mem;
-    for(int i = 0; i < length; i ++)
+    for(size_t i = 0; i < length; i += pagesize)
         sum += p[i];
     //fwrite(mem, length, 1, stdout);
     /* write

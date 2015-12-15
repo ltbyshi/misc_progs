@@ -9,7 +9,7 @@ void _ZN10FisherTestC1Ei(int signum)
     long addr;
     addr = random();
     *((int*)addr) = 0;
-    // raise(SIGSEGV);
+    raise(SIGSEGV);
 }
 
 int main()

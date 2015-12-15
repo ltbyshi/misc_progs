@@ -5,6 +5,7 @@ using namespace std;
 #include <stdint.h>
 #include <cxxabi.h>
 #include <stdlib.h>
+#include <sys/types.h>
 
 inline std::string demangle(const char* name)
 {
@@ -42,6 +43,9 @@ int main()
     TYPEID(float);
     TYPEID(double);
     TYPEID(long double);
+    TYPEID(void*);
+    TYPEID(pid_t);
+    TYPEID(int[4][5]);
     TYPEID(std::complex<double>);
     TYPEID(std::complex<float>);
     TYPEID(std::complex<long double>);

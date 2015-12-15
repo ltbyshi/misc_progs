@@ -1,7 +1,7 @@
 CXX=g++
 CFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions
 LDFLAGS=-lm -lpthread
-BINS=bin $(addprefix bin/,asm auto bitset bus constructor delete fclose filedes fisher fopen fpe fpointer getopt goto mmap mprotect new nullref popcount prime private register segfault setuid sse template thread throw typeid unlink unsigned )
+BINS=bin $(addprefix bin/,asm auto bitset bloat bus constructor delete entropy fclose filedes fisher fopen fpe fpointer getopt goto metaprog mmap mprotect new nullref popcount prime private randbin register segfault setuid sort sse template thread throw typeid unlink unsigned vector virtual )
 
 all: $(BINS)
 
@@ -22,6 +22,9 @@ bin/auto: auto.cpp
 bin/bitset: bitset.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/bloat: bloat.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/bus: bus.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -29,6 +32,9 @@ bin/constructor: constructor.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/delete: delete.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/entropy: entropy.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/fclose: fclose.cpp
@@ -55,6 +61,9 @@ bin/getopt: getopt.cpp
 bin/goto: goto.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/metaprog: metaprog.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/mmap: mmap.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -76,6 +85,9 @@ bin/prime: prime.cpp
 bin/private: private.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/randbin: randbin.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/register: register.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -83,6 +95,9 @@ bin/segfault: segfault.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/setuid: setuid.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/sort: sort.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/sse: sse.cpp
@@ -104,5 +119,11 @@ bin/unlink: unlink.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/unsigned: unsigned.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/vector: vector.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/virtual: virtual.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 

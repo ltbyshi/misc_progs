@@ -1,7 +1,7 @@
 CXX=gcc
-CFLAGS=-g -Wall
-LDFLAGS=-lm -lrt -lSDL2
-BINS=bin $(addprefix bin/,alarm asm atomic bitfield brk builtin complex factorial filelock float gets ioctl jit optimize scrub sdlaudio shm syscall unbuffered vec )
+CFLAGS=-std=c99 -g -Wall -D_POSIX_C_SOURCE=200112L
+LDFLAGS=-lm -lrt -lpthread
+BINS=bin $(addprefix bin/,alarm asm atomic bitfield brk builtin clearline complex factorial filelock float free gets ioctl jit memfrag optimize pipe poll scrub sdlaudio shm struct syscall truncate unbuffered vec wchar )
 
 all: $(BINS)
 
@@ -31,6 +31,9 @@ bin/brk: brk.c
 bin/builtin: builtin.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/clearline: clearline.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/complex: complex.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -43,6 +46,9 @@ bin/filelock: filelock.c
 bin/float: float.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/free: free.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/gets: gets.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -52,7 +58,16 @@ bin/ioctl: ioctl.c
 bin/jit: jit.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/memfrag: memfrag.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/optimize: optimize.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/pipe: pipe.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/poll: poll.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/scrub: scrub.c
@@ -64,12 +79,21 @@ bin/sdlaudio: sdlaudio.c
 bin/shm: shm.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/struct: struct.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/syscall: syscall.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/truncate: truncate.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/unbuffered: unbuffered.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/vec: vec.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/wchar: wchar.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
