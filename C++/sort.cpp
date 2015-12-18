@@ -3,10 +3,10 @@
 using namespace std;
 #include <stdlib.h>
 
-#define OPT_ARGSORT 1
-#define OPT_SORT 0
+#define OPT_ARGSORT 0
+#define OPT_SORT 1
 
-typedef float DType;
+typedef int DType;
 template <typename T>
 struct Compare1
 {
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
         cout << data[i] << " ";
     cout << endl;
 #if OPT_SORT
-    sort(data, data + size, Compare1<DType>());
+    sort(data, data + size, std::less<DType>());
     cout << "After sorting:" << endl;
     for(int i = 0; i < 10; i ++)
         cout << data[i] << " ";

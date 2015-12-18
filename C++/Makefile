@@ -1,7 +1,7 @@
 CXX=g++
 CFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions
 LDFLAGS=-lm -lpthread
-BINS=bin $(addprefix bin/,asm auto bitset bloat bus constructor delete entropy fclose filedes fisher fopen fpe fpointer getopt goto metaprog mmap mprotect new nullref popcount prime private randbin register segfault setuid sort sse template thread throw typeid unlink unsigned vector virtual )
+BINS=bin $(addprefix bin/,asm auto bitset bloat bus constructor delete entropy fclose filedes fisher fopen fpe fpointer getopt goto map metaprog mmap mprotect new nullref nullstring popcount prime private randbin register segfault setuid sort sse template thread throw typeid unlink unsigned vector virtual )
 
 all: $(BINS)
 
@@ -61,6 +61,9 @@ bin/getopt: getopt.cpp
 bin/goto: goto.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
+bin/map: map.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
 bin/metaprog: metaprog.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
@@ -74,6 +77,9 @@ bin/new: new.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/nullref: nullref.cpp
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/nullstring: nullstring.cpp
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/popcount: popcount.cpp
