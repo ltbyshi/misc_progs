@@ -1,23 +1,25 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <list>
 #include <map>
 #include <exception>
 #include <ctype.h>
-using namespace std;
+#include <stdint.h>
 
 class ArgumentException: public std::exception
 {
-    ArgumentException(const std::string& msg): msg(msg) {}
+    ArgumentException(const std::string& msg) {
+        this->msg = std::string("ArgumentParser error: ") + msg;
+    }
     virtual const char* what() const throw()
     {
-        return std::string("ArgumentParser error: ") + msg.c_str();
+        return msg.c_str();
     }
     std::string msg;
 };
 
 
-
-template <typename ValType>
 class Argument
 {
 private:
@@ -36,8 +38,8 @@ private:
     void* _default_value;
     void* _min_value;
     void* _max_value;
-    vector<std::string> _values;
-    vector<void*> _choices;
+    std::vector<std::string> _values;
+    std::vector<void*> _choices;
     //ArgumentHandler* handler;
 private:
     Argument(const Argument& a) {}
@@ -95,6 +97,10 @@ public:
     Argument& flag(bool value) const { _flag = value; return *this; }
     bool flag() const { return _flag; }
     
+    Argument& given(bool value) const { _given = value; return *this; }
+    bool given() const { return _given; }
+    operator bool() const { return _given; }
+    
     Argument& positional(bool value) const { _positional = value; return *this; }
     bool positional() const { return _positional; }
     
@@ -109,15 +115,21 @@ public:
     const ValType& default_value() const { return (*(const ValType*)_default_value); }
     
     template <typename ValType>
-    Argument& choices(const vector<ValType>& values) { 
+    Argument& choice(const ValType& value) {
+        _choices.push_back(new ValType(value));
+        return *this;
+    }
+    
+    template <typename ValType>
+    Argument& choices(const std::vector<ValType>& values) { 
         _choices.resize(values.size());
         for(size_t i = 0; i < values.size(); i ++)
             _choices[i] = new ValType(values[i]);
         return *this;
     }
     template <typename ValType>
-    vector<ValType> choices() {
-        vector<ValType>& values(_choices.size());
+    std::vector<ValType> choices() {
+        std::vector<ValType>& values(_choices.size());
         for(size_t i = 0; i < values.size(); i ++)
             values[i] = *((const ValType*)_choices[i]);
         return values;
@@ -136,8 +148,15 @@ public:
     bool has_min_value() const { return (_min_value != NULL); }
     
     template <typename ValType>
-    vector<ValType> values() const {
-        vector<ValType> result(_values.size());
+    Argument& range(const ValType& minval, const ValType& maxval) {
+        _min_value = new ValType(minval);
+        _max_value = new ValType(maxval);
+        return *this;
+    }
+    
+    template <typename ValType>
+    std::vector<ValType> values() const {
+        std::vector<ValType> result(_values.size());
         for(size_t i = 0; i < result.size(); i ++)
         {
             std::istringstream is(_values[i]);
@@ -156,8 +175,23 @@ public:
     }
     
     template <typename ValType>
-    void check_values() const {
+    void check_values(const std::vector<ValType>& values) const {
         if((_min_value != NULL) && (_max_value != NULL))
+        {
+            for(size_t i = 0; i < values.size(); i ++)
+            {
+                if((values < *_min_value) || (values > *_max_value))
+                    throw ArgumentException("value of " + _name + " out of range");
+            }
+        }
+        if(_choices.size() > 0)
+        {
+            for(size_t i = 0; i < values.size(); i ++)
+            {
+                if(std::find(_choices.begin(), _choices.end(), values[i]) == _choices.end())
+                    throw ArgumentException("value of " _name + " not in choices");
+            }
+        }
     }
 };
 
@@ -170,6 +204,7 @@ struct NullArgumentHandler
 class ArgumentParser
 {
 public:
+    enum {NARGS_INF = INT_MAX};
     ArgumentParser(const std::string& description = "")
         : _description(description) {}
         
@@ -189,6 +224,7 @@ public:
     Argument& get_argument(const std::string& name);
     
     void parse_args(int argc, char** argv);
+    Argument& operator[](const std::string& name) { return get_argument(name); }
     void help(const std::string& progname) const;
 private:
     std::map<std::string, Argument*> _arguments;
@@ -236,13 +272,26 @@ void ArgumentParser::parse_args(int argc, char** argv)
     // find positionals and create argument map
     if(!_parsed)
     {
+        int varnarg_positionals = 0;
         for(std::list<std::string>::iterator it = _names.begin(); it != _names.end(); ++it)
         {
             Argument* arg = _arguments[*it];
+            if(arg->nargs_min() > arg->nargs_max())
+                throw ArgumentException("nargs_min should not be larger than nargs_max");
             if(arg->positional)
+            {
                 _positionals.push_back(arg);
+                if((arg->nargs_min() != args->nargs_max())
+                    || (arg->nargs_max() == NARGS_INF)
+                    || (arg->nargs_min() == NARGS_INF))
+                    varnarg_positionals ++;
+                if(varnarg_positionals > 1)
+                    throw ArgumentException("number of variable narg positionals should be no more than one");
+            }
             else
             {
+                if((arg->nargs_max() == NARGS_INF) || (arg->nargs_min() == NARGS_INF))
+                    throw ArgumentException("optional argument " + _name + "cannot be of variable narg");
                 if((arg->long_arg.size() <= 0) && (arg->short_arg.size() <= 0))
                     throw ArgumentException("at least one of long option or short option should be non-empty");
                 if(arg->short_arg.size() > 0)
@@ -259,8 +308,6 @@ void ArgumentParser::parse_args(int argc, char** argv)
                         throw ArgumentException("long option " + short_arg + " is duplicated");
                     _argmap[long_arg] = arg;
                 }
-                if(arg->nargs_min > arg->nargs_max)
-                    throw ArgumentException("nargs_min should not be larger than nargs_max");
             }
         }
     }
@@ -333,31 +380,24 @@ void ArgumentParser::check_option(const std::string& name,
     }
 }
 
-template <typename ValType>
-void ArgumentParser::add_argument<ValType>(const std::string& name,
-                      const std::string& long_arg,
-                      const std::string& short_arg,
-                      const std::string& help,
-                      const ValType& defval,
-                      int nargs = 1,
-                      bool flag,
-                      bool required = false)
+int main(int argc, char** argv)
 {
-    check_option(name, long_arg, short_arg);
+    ArgumentParser parser("ArgumentParser test");
+    parser.add_argument("help").short_arg("h").flag(true);
+    parser.add_argument("name").short_arg("u").required(true);
+    parser.add_argument("password").short_arg("p").required(true);
+    parser.parse_args();
     
-    Argument<ValType>* arg = new Argument<ValType>;
-    arg->name = name;
-    arg->short_arg = std::string("-") + short_arg;
-    arg->long_arg = std::string("--") + long_arg;
-    arg->help = help;
-    arg->given = false;
-    arg->flag = flag;
-    arg->required = required;
-    arg_defvalue = defval;
-    options[arg->name] = arg;
-    if(arg->long_arg.size() > 0)
-        argmap[arg->long_arg] = arg;
-    if(arg->short_arg.size() > 0)
-        argmap[arg->short_arg] = arg;
+    if(parser["help"])
+    {
+        parser.help();
+        return 1;
+    }
+    if(parser["name"])
+        std::cout << "name: " << parser["name"].value<std::string>();
+    if(parser["password"])
+        std::cout << "password: " << parser["password"].value<std::string>();
+    
+    return 0;
 }
 
