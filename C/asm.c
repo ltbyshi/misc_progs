@@ -11,8 +11,9 @@ void handler(int signum)
 int main(int argc, char** argv, char** envp)
 {
     signal(SIGILL, handler);
+    __asm__("jmp main");
     __asm__("int $0x80");
     __asm__("sysenter");
-    __asm__("ud2");
+    // __asm__("ud2");
     return 0;
 }
