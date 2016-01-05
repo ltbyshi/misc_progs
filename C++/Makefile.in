@@ -1,0 +1,12 @@
+# hdf5test
+bin/hdf5test: hdf5test.cpp
+ifdef HDF5_LIB_PATH
+	$(CXX) $(CFLAGS) -o $@ $< $(LDFLAGS) -L$(HDF5_LIB_PATH) -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5
+else
+	$(CXX) $(CFLAGS) -o $@ $< $(LDFLAGS) -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5
+endif
+
+# argparse
+bin/argparse: argparse.cpp argparse.h
+
+
