@@ -1,12 +1,17 @@
 # hdf5test
-bin/hdf5test: hdf5test.cpp
-ifdef HDF5_LIB_PATH
-	$(CXX) $(CFLAGS) -o $@ $< $(LDFLAGS) -L$(HDF5_LIB_PATH) -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5
-else
-	$(CXX) $(CFLAGS) -o $@ $< $(LDFLAGS) -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5
+HDF5TESt_LDFLAGS = $(LDFLAGS)
+ifdef HDF5_LIBRARY_PATH
+  HDF5TEST_LDFLAGS += -L$(HDF5_LIBRARY_PATH)
 endif
+HDF5TEST_LDFLAGS += -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5
+HDF5TEST_CXXFLAGS = $(CXXFLAGS)
+ifdef HDF5_INCLUDE_PATH
+  HDF5TEST_CXXFLAGS += -I$(HDF5_INCLUDE_PATH)
+endif
+bin/hdf5test: hdf5test.cpp
+	$(CXX) $(HDF5TEST_CXXFLAGS) -o $@ $< $(HDF5TEST_LDFLAGS)
 
 # argparse
-bin/argparse: argparse.cpp argparse.h
-
+bin/argparse: argparse.cpp argparse.h anytype.h
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 

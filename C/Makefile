@@ -1,7 +1,7 @@
 CXX=gcc
 CFLAGS=-std=c99 -g -Wall -D_POSIX_C_SOURCE=200112L
 LDFLAGS=-lm -lrt -lpthread
-BINS=bin $(addprefix bin/,alarm asm atomic bitfield brk builtin clearline complex factorial filelock float free gets ioctl jit longjmp memfrag optimize pipe poll scrub sdlaudio shm struct syscall truncate unbuffered vec wchar )
+BINS=bin $(addprefix bin/,alarm asm atomic bitfield brk builtin clearline complex factorial filelock float free gets ioctl jit longjmp memfrag optimize pipe poll scrub sdlaudio shm signal struct syscall truncate unbuffered vec wchar )
 
 all: $(BINS)
 
@@ -80,6 +80,9 @@ bin/sdlaudio: sdlaudio.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/shm: shm.c
+	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+
+bin/signal: signal.c
 	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
 
 bin/struct: struct.c

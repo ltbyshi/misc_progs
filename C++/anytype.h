@@ -28,6 +28,7 @@ public:
             << "' " << op << " '" << Demangle(ti2.name()) << "'";
         msg = os.str();
     }
+    BadAnyCast(const std::string msg): msg(msg) {}
     
     virtual const char* what() const noexcept {
         return msg.c_str();
@@ -125,6 +126,15 @@ private:
     ValType value;
 };
 
+template <> std::string AnyValue<bool>::Str() const {
+    return (value? "true" : "false");
+}
+template <> std::ostream& AnyValue<bool>::Output(std::ostream& os) const {
+    if(value) os << "true";
+    else os << "false";
+    return os;
+}
+
 class AnyType
 {
     friend std::ostream& operator<<(std::ostream& os, const AnyType& a);
@@ -150,6 +160,19 @@ public:
         if(value) delete value;
     }
     
+    static AnyType FromType(std::string& typestr){
+        if((typestr == "str") || (typestr == "string")) return AnyType(std::string(""));
+        else if(typestr == "bool") return AnyType((bool)0);
+        else if(typestr == "int") return AnyType((int)0);
+        else if(typestr == "long") return AnyType((long)0);
+        else if(typestr == "float") return AnyType((float)0);
+        else if(typestr == "double") return AnyType((double)0);
+        else if(typestr == "ldouble") return AnyType((long double)0);
+        else if(typestr == "llong") return AnyType((long long)0);
+        else throw BadAnyCast(std::string("Invalid type: ") + typestr);
+        return AnyType((int)0);
+    }
+    
     AnyType& operator=(const AnyType& a) {
         if(value) 
             delete value;
@@ -161,6 +184,11 @@ public:
     
     template <typename ValType2>
     ValType2 Cast() const {
+        if(!value)
+            throw BadAnyCast("No values in AnyType");
+        // convert to string
+        if(typeid(ValType2) == typeid(std::string))
+            return value->Str();
         if(value->Type() != typeid(ValType2))
             throw BadAnyCast("=>", value->Type(), typeid(ValType2));
         return ((const AnyValue<ValType2>*)value)->value;
@@ -170,6 +198,7 @@ public:
     AnyType& operator=(const ValType& v) {
         return Store<ValType>(v);
     }
+    
  
     AnyType operator+(const AnyType& b) const {
         AnyType c;
@@ -230,6 +259,5 @@ inline std::istream& operator>>(std::istream& is, AnyType& a) {
         a.value = new AnyValue<std::string>("");
     return a.value->Input(is);
 }
-    
 
 #endif
