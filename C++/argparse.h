@@ -24,9 +24,10 @@ public:
     std::string msg;
 };
 
-
+class ArgumentParser;
 class Argument
 {
+    friend class ArgumentParser;
 private:
     std::string _name;
     std::string _type;
@@ -39,8 +40,8 @@ private:
     bool _flag;
     bool _required;
     bool _positional;
-    int _nargs_min;
-    int _nargs_max;
+    size_t _nargs_min;
+    size_t _nargs_max;
     AnyType _default_value;
     AnyType _min_value;
     AnyType _max_value;
@@ -52,13 +53,10 @@ private:
     Argument& operator=(const Argument& arg) { return *this; }
 public:
     Argument(const std::string& name,
-             const std::string& type = "str",
-             const std::string& short_arg = "",
-             const std::string& help = ""
-            ): _name(name), _type(type), _given(false), _flag(false),
+             const std::string& type = "str"
+            ): _name(name), _type(type),
+        _given(false), _flag(false),
         _nargs_min(1), _nargs_max(1) {
-        this->short_arg(short_arg);
-        
     }
     
     ~Argument() {}
@@ -78,13 +76,44 @@ public:
     DECLARE_PROPERTY(flag, bool, _flag);
     DECLARE_PROPERTY(required, bool, _required);
     DECLARE_PROPERTY(positional, bool, _positional);
-    DECLARE_PROPERTY(nargs_min, int, _nargs_min);
-    DECLARE_PROPERTY(nargs_max, int, _nargs_max);
-    DECLARE_PROPERTY(default_value, AnyType, _default_value);
-    DECLARE_PROPERTY(min_value, AnyType, _min_value);
-    DECLARE_PROPERTY(max_value, AnyType, _max_value);
+    DECLARE_PROPERTY(nargs_min, size_t, _nargs_min);
+    DECLARE_PROPERTY(nargs_max, size_t, _nargs_max);
 #undef DECLARE_PROPERTY
-    
+    // default_value
+    template <typename ValType>
+    Argument& default_value(const ValType& value) {
+        _default_value = AnyType::FromType(_type).Store(value);
+        return *this;
+    }
+    const AnyType& default_value() const {
+        return _default_value;
+    }
+    // min_value
+    template <typename ValType>
+    Argument& min_value(const ValType& value) {
+        _min_value = AnyType::FromType(_type).Store(value);
+        return *this;
+    }
+    const AnyType& min_value() const {
+        return _min_value;
+    }
+    // max_value
+    template <typename ValType>
+    Argument& max_value(const ValType& value) {
+        _max_value = AnyType::FromType(_type).Store(value);
+        return *this;
+    }
+    template <typename ValType>
+    const AnyType& max_value() const {
+        return _max_value;
+    }
+    // range
+    template <typename ValType>
+    Argument& range(const ValType& minval, const ValType& maxval) {
+        _min_value = AnyType::FromType(_type).Store(minval);
+        _max_value = AnyType::FromType(_type).Store(maxval);
+        return *this;
+    }
 #if 0
     Argument& name(const std::string& value) { _name = value; return *this; }
     const std::string& name() const { return _name; }
@@ -128,12 +157,12 @@ public:
     Argument& positional(bool value) const { _positional = value; return *this; }
     bool positional() const { return _positional; }
 #endif
-    Argument& nargs(int value) {
+    Argument& nargs(size_t value) {
         _nargs_min = value; 
         _nargs_max = value;
         return *this;
     }
-    Argument& nargs(int minval, int maxval) {
+    Argument& nargs(size_t minval, size_t maxval) {
         _nargs_min = minval; 
         _nargs_max = maxval; 
         return *this; 
@@ -154,36 +183,15 @@ public:
     }
 #endif
     template <typename ValType>
-    Argument& choices(const std::vector<ValType>& values) { 
-        _choices.resize(values.size());
-        for(size_t i = 0; i < values.size(); i ++)
-            _choices[i] = values[i];
+    Argument& add_choice(const ValType& value) {
+        _choices.push_back(AnyType::FromType(_type).Store(value));
         return *this;
     }
     template <typename ValType>
-    std::vector<ValType> choices() {
-        std::vector<ValType>& values(_choices.size());
+    Argument& choices(const std::vector<ValType>& values) { 
+        _choices.resize(values.size());
         for(size_t i = 0; i < values.size(); i ++)
-            values[i] = _choices[i].Cast<ValType>();
-        return values;
-    }
-    
-    template <typename ValType>
-    Argument& max_value(const ValType& value) { _max_value = value; return *this; }
-    template <typename ValType>
-    const ValType& max_value() const { return _max_value.Cast<ValType>(); }
-    bool has_max_value() const { return (!_max_value.Empty()); }
-    
-    template <typename ValType>
-    Argument& min_value(const ValType& value) { _min_value = value; return *this; }
-    template <typename ValType>
-    const ValType& min_value() const { return _min_value.Cast<ValType>(); }
-    bool has_min_value() const { return (!_min_value.Empty()); }
-    
-    template <typename ValType>
-    Argument& range(const ValType& minval, const ValType& maxval) {
-        _min_value = minval;
-        _max_value = maxval;
+            _choices[i] = AnyType::FromType(_type).Store(values[i]);
         return *this;
     }
     
@@ -197,22 +205,15 @@ public:
     }
     template <typename ValType>
     ValType value() const { 
-        if(_values.size() <= 0)
-            throw ArgumentException("no values given for " + _name);
-        return _values[0].Cast<ValType>();
+        return value<ValType>(0);
+    }
+    template <typename ValType>
+    ValType value(size_t i) const {
+        if(i >= _values.size())
+            throw ArgumentException("value index out of bound in option " + _name);
+        return _values[i].Cast<ValType>();
     }
     
-    Argument& set_value(const std::string& value) {
-        AnyType v = AnyType::FromType(_type);
-        std::istringstream is(value);
-        is >> v;
-        if(!is)
-            throw ArgumentException(std::string("cannot parse argument ") + value + " as " + _type);
-        if(_values.size() == 0)
-            _values.resize(1);
-        _values[0] = v;
-        return *this;
-    }
     Argument& set_value(const AnyType& value) {
         if(_values.size() == 0)
             _values.resize(1);
@@ -220,13 +221,18 @@ public:
         return *this;
     }
     
-    Argument& add_value(const std::string& value) {
-        AnyType v = AnyType::FromType(_type);
-        std::istringstream is(value);
-        is >> v;
-        if(!is)
-            throw ArgumentException(std::string("cannot parse argument ") + value + " as " + _type);
-        _values.push_back(v);
+    Argument& set_value(const std::string& s) {
+        set_value(AnyType::Parse(s, _type));
+        return *this;
+    }
+    
+    Argument& add_value(const AnyType& value) {
+        _values.push_back(value);
+        return *this;
+    }
+    
+    Argument& add_value(const std::string& s) {
+        add_value(AnyType::Parse(s, _type));
         return *this;
     }
     
@@ -268,8 +274,12 @@ public:
             throw ArgumentException(std::string("nargs_min should be at least 1 for positional ") + _name);
         if(!_positional && (_nargs_max > 1))
             throw ArgumentException(std::string("option '") + _name + "' should not have more than one value");
-        
-        
+        // check type
+        AnyType proto = AnyType::FromType(_type);
+        if(!_min_value.Empty() && (_min_value.Type() != proto.Type()))
+            throw ArgumentException(std::string("min_value is incompatible with the given type in option") + _name);
+        if(!_max_value.Empty() && (_max_value.Type() != proto.Type()))
+            throw ArgumentException(std::string("max_value is incompatible with the given type in option") + _name);
     }
     
     void ValidateValues() const {
@@ -331,6 +341,7 @@ public:
                              const std::string& type = "str");
     Argument& add_argument(const std::string& name,
                            const std::string& type = "str");
+    Argument& add_flag(const std::string& name);
     void check_option(const std::string& name,
                       const std::string& long_arg,
                       const std::string& short_arg) const;
@@ -398,6 +409,19 @@ Argument& ArgumentParser::add_argument(const std::string& name, const std::strin
     return *arg;
 }
 
+Argument& ArgumentParser::add_flag(const std::string& name)
+{
+    if(_arguments.find(name) != _arguments.end())
+        throw ArgumentException(std::string("argument ") + name + " is duplicated");
+    Argument* arg = new Argument(name, "bool");
+    arg->long_arg(name);
+    arg->set_value(AnyType(false));
+    arg->nargs(1);
+    _arguments[name] = arg;
+    _names.push_back(name);
+    return *arg;
+}
+
 Argument& ArgumentParser::get_argument(const std::string& name)
 {
     std::map<std::string, Argument*>::iterator it = _arguments.find(name);
@@ -416,12 +440,6 @@ void ArgumentParser::parse_args(int argc, char** argv)
         {
             Argument* arg = _arguments[*it];
             arg->Validate();
-            if(arg->flag())
-            {
-                arg->type("bool");
-                arg->nargs(1);
-                arg->set_value(AnyType(false));
-            }
             if(arg->positional())
             {
                 // positionals are required
@@ -546,6 +564,8 @@ void ArgumentParser::parse_args(int argc, char** argv)
     for(mapiter it = _arguments.begin(); it != _arguments.end(); ++ it)
     {
         Argument* arg = it->second;
+        if(arg->given() && (arg->nvalues() == 0))
+            throw ArgumentException(std::string("option '") + arg->name() + "' requires arguments");
         // load default values
         if((arg->nvalues() == 0) && (!arg->default_value().Empty()))
             arg->set_value(arg->default_value());
