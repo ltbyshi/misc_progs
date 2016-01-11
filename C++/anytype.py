@@ -56,6 +56,7 @@ def GenAnyTypeConstructor(indent=4):
     for t in c_types:
         print '%sAnyType(%s val) { value = new AnyValue<%s>(val); }'%(space, t, t)
     print '%sAnyType(const std::string& val) { value = new AnyValue<std::string>(val); }'%space
+    print '%sAnyType(const char* val) { value = new AnyValue<std::string>(val); }'
     print ''
 
 def GenAnyValueCast(indent=4):
@@ -82,6 +83,7 @@ def GenAnyValueBaseStore(indent=4):
     for t in c_types:
         print '%svirtual void Store(%s val) = 0;'%(space, t)
     print '%svirtual void Store(const std::string& val) = 0;'%space
+    print '%svirtual void Store(const char* val) = 0;'%space
     print ''
 
 def GenAnyValueStore(indent=4):
@@ -90,11 +92,13 @@ def GenAnyValueStore(indent=4):
     for t in c_types:
         print '%svirtual void Store(%s val) { value = static_cast<ValType>(val); }'%(space, t)
     print '%svirtual void Store(const std::string& val) { FromString(val); }'%space
+    print '%svirtual void Store(const char* val) { FromString(std::string(val)); }'%space
     print ''
     print 'class AnyValue<std::string>::Store'
     for t in c_types:
         print 'template<> void AnyValue<std::string>::Store(%s val) { value = ValueToString(val); }'%(t)
     print 'template<> void AnyValue<std::string>::Store(const std::string& val) { value = val; }'
+    print 'template<> void AnyValue<std::string>::Store(const char* val) { value = val; }'
     print ''
 
 def GenAnyTypeStore(indent=4):

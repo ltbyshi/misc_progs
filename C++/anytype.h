@@ -88,6 +88,7 @@ public:
     virtual void Store(double val) = 0;
     virtual void Store(long double val) = 0;
     virtual void Store(const std::string& val) = 0;
+    virtual void Store(const char* val) = 0;
     
     virtual bool IsNumeric() const = 0;
     
@@ -170,6 +171,7 @@ public:
     virtual void Store(double val) { value = static_cast<ValType>(val); }
     virtual void Store(long double val) { value = static_cast<ValType>(val); }
     virtual void Store(const std::string& val) { FromString(val); }
+    virtual void Store(const char* val) { FromString(std::string(val)); }
     
     virtual bool IsNumeric() const {
         return (
@@ -242,6 +244,7 @@ template<> void AnyValue<std::string>::Store(float val) { value = ValueToString(
 template<> void AnyValue<std::string>::Store(double val) { value = ValueToString(val); }
 template<> void AnyValue<std::string>::Store(long double val) { value = ValueToString(val); }
 template<> void AnyValue<std::string>::Store(const std::string& val) { value = val; }
+template<> void AnyValue<std::string>::Store(const char* val) { value = val; }
 
 class AnyType
 {
@@ -261,6 +264,7 @@ public:
     AnyType(double val) { value = new AnyValue<double>(val); }
     AnyType(long double val) { value = new AnyValue<long double>(val); }
     AnyType(const std::string& val) { value = new AnyValue<std::string>(val); }
+    AnyType(const char* val) { value = new AnyValue<std::string>(val); }
     
     AnyType(const AnyType& a): value(NULL){
         if(a.value)
@@ -306,9 +310,13 @@ public:
     ValType2 Cast() const {
         if(!value)
             throw BadAnyCast("No values in AnyType");
-        return value->Cast(ValType2(0));
+        if(typeid(ValType2) == typeid(std::string))
+            return value->Cast(std::string(""));
+        else
+            return value->Cast(ValType2(0));
     }
     
+#if 0
     template <typename ValType>
     AnyType& operator=(const ValType& v) {
         if(value)
@@ -317,7 +325,7 @@ public:
             value = new AnyValue<ValType>(v);
         return *this;
     }
- 
+#endif
     AnyType operator+(const AnyType& b) const {
         AnyType c;
         c.value = value->add(b.value);
@@ -392,6 +400,7 @@ public:
     AnyType& Store(double val) { if(value) value->Store(val); else value = new AnyValue<double>(val); return *this; }
     AnyType& Store(long double val) { if(value) value->Store(val); else value = new AnyValue<long double>(val); return *this; }
     AnyType& Store(const std::string& val) { if(value) value->Store(val); else value = new AnyValue<std::string>(val); return *this; }
+    AnyType& Store(const char* val) { if(value) value->Store(val); else value = new AnyValue<std::string>(val); return *this; }
 private:
     AnyValueBase* value;
 };

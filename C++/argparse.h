@@ -184,9 +184,21 @@ public:
 #endif
     template <typename ValType>
     Argument& add_choice(const ValType& value) {
-        _choices.push_back(AnyType::FromType(_type).Store(value));
+        AnyType a = AnyType::FromType(_type);
+        a.Store(value);
+        std::cout << "add_choice(" << _type << "): " << a << std::endl;
+        _choices.push_back(a);
         return *this;
     }
+    
+    Argument& add_choice(const char* value) {
+        AnyType a = AnyType::FromType(_type);
+        a.Store(value);
+        _choices.push_back(a);
+        std::cout << "add_choice(" << _type << "): " << a << std::endl;
+        return* this;
+    }
+    
     template <typename ValType>
     Argument& choices(const std::vector<ValType>& values) { 
         _choices.resize(values.size());
@@ -377,6 +389,8 @@ ArgumentParser::ArgumentParser(const std::string& description)
             valid_long[int(c)] = true;
         valid_long[int('_')] = true;
         valid_long[int('.')] = true;
+        
+        add_flag("help").short_arg("h").help("display help");
     }
 
 ArgumentParser::~ArgumentParser()
@@ -558,6 +572,11 @@ void ArgumentParser::parse_args(int argc, char** argv)
             break;
     }
     */
+    if(_arguments["help"]->given())
+    {
+        help(argv[0]);
+        exit(1);
+    }
     if(argi < argc)
         throw ArgumentException(std::string("extra arguments given"));
     
@@ -616,13 +635,21 @@ void ArgumentParser::help(const std::string& progname) const
         }
         for(int i = pos; i < _max_option_width; i ++)
             std::cout << ' ';
-        std::cout << arg->help() << ". ";
+        if(arg->help().size() > 0)
+            std::cout << arg->help() << ". ";
         if(arg->required())
             std::cout << "Required. ";
         else
             std::cout << "Optional. ";
         if(!arg->default_value().Empty())
-            std::cout << "Default is " << arg->default_value() << ".";
+            std::cout << "Default is " << arg->default_value() << ". ";
+        if(arg->_choices.size() > 0)
+        {
+            std::cout << "Choices:";
+            for(size_t i = 0; i < arg->_choices.size(); i ++)
+                std::cout << " " << arg->_choices[i];
+            std::cout << ". ";
+        }
         
         std::cout << std::endl;
     }
