@@ -1,5 +1,5 @@
 # hdf5test
-HDF5TESt_LDFLAGS = $(LDFLAGS)
+HDF5TEST_LDFLAGS = $(LDFLAGS)
 ifdef HDF5_LIBRARY_PATH
   HDF5TEST_LDFLAGS += -L$(HDF5_LIBRARY_PATH)
 endif
@@ -12,6 +12,14 @@ bin/hdf5test: hdf5test.cpp
 	$(CXX) $(HDF5TEST_CXXFLAGS) -o $@ $< $(HDF5TEST_LDFLAGS)
 
 # argparse
-bin/argparse: argparse.cpp argparse.h anytype.h
+bin/argparse: argparse.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
+# rapidjson
+RAPIDJSON_CXXFLAGS = 
+ifdef RAPIDJSON_INCLUDE_PATH
+  RAPIDJSON_CXXFLAGS = -I$(RAPIDJSON_INCLUDE_PATH)
+endif
+bin/rapidjson: rapidjson.cpp
+	$(CXX) $(CXXFLAGS) $(RAPIDJSON_CXXFLAGS) -o $@ $< $(LDFLAGS)
+	

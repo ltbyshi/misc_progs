@@ -9,7 +9,8 @@
 #include <exception>
 #include <ctype.h>
 #include <limits.h>
-#include "anytype.h"
+
+#include <anytype.h>
 
 class ArgumentException: public std::exception
 {
@@ -348,21 +349,25 @@ public:
     ArgumentParser(const std::string& description = "");
     ~ArgumentParser();
     
-    ArgumentParser& description(const std::string& value);
+    inline ArgumentParser& description(const std::string& value) { _description = value; return *this; }
+    inline ArgumentParser& progname(const std::string& value) { _progname = value; return *this; }
+    inline ArgumentParser& max_width(int value) { _max_width = value; return *this; }
+    inline ArgumentParser& max_option_width(int value) { _max_option_width = value; return *this; }
+
     Argument& add_positional(const std::string& name,
                              const std::string& type = "str");
     Argument& add_argument(const std::string& name,
                            const std::string& type = "str");
     Argument& add_flag(const std::string& name);
-    void check_option(const std::string& name,
-                      const std::string& long_arg,
-                      const std::string& short_arg) const;
     Argument& get_argument(const std::string& name);
     
     void parse_args(int argc, char** argv);
     Argument& operator[](const std::string& name) { return get_argument(name); }
-    void help(const std::string& progname) const;
+    void help() const;
     void summary() const;
+    
+    void validate_args();
+    void validate_values();
 private:
     std::map<std::string, Argument*> _arguments;
     std::map<std::string, Argument*> _argmap;
@@ -374,6 +379,7 @@ private:
     int _max_width;
     std::vector<bool> valid_long;
     std::vector<bool> valid_short;
+    std::string _progname;
 };
 
 ArgumentParser::ArgumentParser(const std::string& description)
@@ -444,53 +450,71 @@ Argument& ArgumentParser::get_argument(const std::string& name)
     return *(it->second);
 }
 
+void ArgumentParser::validate_args()
+{
+    int varnarg_positionals = 0;
+    for(std::list<std::string>::iterator it = _names.begin(); it != _names.end(); ++it)
+    {
+        Argument* arg = _arguments[*it];
+        arg->Validate();
+        if(arg->positional())
+        {
+            // positionals are required
+            arg->required(true);
+            _positionals.push_back(arg);
+            if((arg->nargs_min() != arg->nargs_max())
+                || (arg->nargs_max() == NARGS_INF)
+                || (arg->nargs_min() == NARGS_INF))
+                varnarg_positionals ++;
+            if(varnarg_positionals > 1)
+                throw ArgumentException("number of variable narg positionals should be no more than one");
+        }
+        else
+        {
+            if((arg->nargs_max() == NARGS_INF) || (arg->nargs_min() == NARGS_INF))
+                throw ArgumentException(std::string("optional argument ") + arg->name() + "cannot be of variable narg");
+            if((arg->long_arg().size() <= 0) && (arg->short_arg().size() <= 0))
+                throw ArgumentException("at least one of long option or short option should be non-empty");
+            if(arg->short_arg().size() > 0)
+            {
+                std::string short_arg = std::string("-") + arg->short_arg();
+                if(_argmap.find(short_arg) != _argmap.end())
+                    throw ArgumentException(std::string("short option ") + arg->short_arg() + " is duplicated");
+                _argmap[short_arg] = arg;
+            }
+            if(arg->long_arg().size() > 0)
+            {
+                std::string long_arg = std::string("--")+ arg->long_arg();
+                if(_argmap.find(long_arg) != _argmap.end())
+                    throw ArgumentException(std::string("long option ") + arg->long_arg() + " is duplicated");
+                _argmap[long_arg] = arg;
+            }
+        }
+    }
+}
+
+void ArgumentParser::validate_values()
+{
+    for(mapiter it = _arguments.begin(); it != _arguments.end(); ++ it)
+    {
+        Argument* arg = it->second;
+        if(arg->given() && (arg->nvalues() == 0))
+            throw ArgumentException(std::string("option '") + arg->name() + "' requires arguments");
+        // load default values
+        if((arg->nvalues() == 0) && (!arg->default_value().Empty()))
+            arg->set_value(arg->default_value());
+        // validate
+        if(arg->required())
+            arg->ValidateValues();
+    }
+}
+
 void ArgumentParser::parse_args(int argc, char** argv)
 {
     // find positionals and create argument map
-    if(!_parsed)
-    {
-        int varnarg_positionals = 0;
-        for(std::list<std::string>::iterator it = _names.begin(); it != _names.end(); ++it)
-        {
-            Argument* arg = _arguments[*it];
-            arg->Validate();
-            if(arg->positional())
-            {
-                // positionals are required
-                arg->required(true);
-                _positionals.push_back(arg);
-                if((arg->nargs_min() != arg->nargs_max())
-                    || (arg->nargs_max() == NARGS_INF)
-                    || (arg->nargs_min() == NARGS_INF))
-                    varnarg_positionals ++;
-                if(varnarg_positionals > 1)
-                    throw ArgumentException("number of variable narg positionals should be no more than one");
-            }
-            else
-            {
-                if((arg->nargs_max() == NARGS_INF) || (arg->nargs_min() == NARGS_INF))
-                    throw ArgumentException(std::string("optional argument ") + arg->name() + "cannot be of variable narg");
-                if((arg->long_arg().size() <= 0) && (arg->short_arg().size() <= 0))
-                    throw ArgumentException("at least one of long option or short option should be non-empty");
-                if(arg->short_arg().size() > 0)
-                {
-                    std::string short_arg = std::string("-") + arg->short_arg();
-                    if(_argmap.find(short_arg) != _argmap.end())
-                        throw ArgumentException(std::string("short option ") + arg->short_arg() + " is duplicated");
-                    _argmap[short_arg] = arg;
-                }
-                if(arg->long_arg().size() > 0)
-                {
-                    std::string long_arg = std::string("--")+ arg->long_arg();
-                    if(_argmap.find(long_arg) != _argmap.end())
-                        throw ArgumentException(std::string("long option ") + arg->long_arg() + " is duplicated");
-                    _argmap[long_arg] = arg;
-                }
-            }
-        }
-        _parsed = true;
-    }
-    std::string progname = argv[0];
+    validate_args();
+    if(_progname.size() <= 0)
+        _progname = argv[0];
     int argi = 1;
     // parse options
     Argument* arg = NULL;
@@ -574,30 +598,18 @@ void ArgumentParser::parse_args(int argc, char** argv)
     */
     if(_arguments["help"]->given())
     {
-        help(argv[0]);
+        help();
         exit(1);
     }
     if(argi < argc)
         throw ArgumentException(std::string("extra arguments given"));
     
-    for(mapiter it = _arguments.begin(); it != _arguments.end(); ++ it)
-    {
-        Argument* arg = it->second;
-        if(arg->given() && (arg->nvalues() == 0))
-            throw ArgumentException(std::string("option '") + arg->name() + "' requires arguments");
-        // load default values
-        if((arg->nvalues() == 0) && (!arg->default_value().Empty()))
-            arg->set_value(arg->default_value());
-        // validate
-        if(arg->required())
-            arg->ValidateValues();
-    }
-    
+    validate_values();
 }
 
-void ArgumentParser::help(const std::string& progname) const
+void ArgumentParser::help() const
 {
-    std::cout << "Usage: " << progname << " [options] ";
+    std::cout << "Usage: " << _progname << " [options] ";
     for(std::list<Argument*>::const_iterator it = _positionals.begin(); it != _positionals.end(); ++ it)
         std::cout << " " << (*it)->name();
     std::cout << "\n" << std::endl;
@@ -685,35 +697,5 @@ void ArgumentParser::summary() const
     std::cout << std::endl;
 }
 
-void ArgumentParser::check_option(const std::string& name,
-                      const std::string& long_arg,
-                      const std::string& short_arg) const
-{
-    if((long_arg.size() <= 0) && (short_arg.size() <= 0))
-        throw ArgumentException("at least one of long option or short option should be non-empty");
-    if(long_arg.size() > 0)
-    {
-        if(_argmap.find(long_arg) != _argmap.end())
-            throw ArgumentException(std::string("option ") + long_arg + " is duplicated");
-        else if(long_arg[0] == '-')
-            throw ArgumentException("long option should not start with -");
-    }
-    if(short_arg.size() > 0)
-    {
-        if(_argmap.find(short_arg) != _argmap.end())
-            throw ArgumentException("option " + short_arg + " is duplicated");
-        else if(short_arg[0] == '-')
-            throw ArgumentException(" short option should not start with -");  
-    }
-    if(name.size() <= 0)
-        throw ArgumentException("option name is empty");
-    else
-    {
-        if(name[0] == '-')
-            throw ArgumentException("option name should not start with -");
-        else if(_arguments.find(name) != _arguments.end())
-            throw ArgumentException(std::string("option name ") + name + " is duplicated");
-    }
-}
 
 #endif

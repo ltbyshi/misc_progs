@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-#include "anytype.h"
+
+#include <anytype.h>
 
 #define PRINTOP(op, var) op; cout << #op << " => "; \
     cout << #var << "(" << var.TypeStr() << ") = " << var << endl;
