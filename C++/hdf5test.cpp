@@ -12,7 +12,7 @@ using namespace H5;
 
 void WriteDataSet(const char* filename)
 {
-    hsize_t dims[2] = {5000, 5000};
+    hsize_t dims[2] = {1000, 5000};
     hsize_t count = dims[0]*dims[1];
 
     cout << "Delete " << filename << endl;

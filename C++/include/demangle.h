@@ -7,6 +7,8 @@ inline std::string demangle(const std::string& name)
 {
     int status;
     char* s = abi::__cxa_demangle(name.c_str(), 0, 0, &status);
+    if(!s)
+        return "";
     std::string fullname(s);
     free(s);
     return fullname;

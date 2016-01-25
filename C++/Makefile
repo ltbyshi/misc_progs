@@ -3,11 +3,11 @@ CXX=g++
 CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include
 LDFLAGS=-lm -lpthread
 
-BINS=bin animate argparse argsort asm auto bitset bloat bus constructor delete entropy exception fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer map metaprog mmap mprotect new nullref nullstring popcount prime private randbin rapidjson register segfault setuid sort sse static_assert template thread throw typeid unlink unsigned vector virtual voidtype 
+BINS=bin animate argparse argsort asm auto bitset bloat bus constructor dataframe delete demangle entropy exception fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer map metaprog mmap mprotect mystream new nullref nullstring popcount prime private randbin rapidjson register segfault setuid sort split sse static_assert template thread throw typeid unlink unsigned unwind vector virtual2 virtual voidtype 
 
 all: $(BINS)
 
-.PHONY: all clean animate argparse argsort asm auto bitset bloat bus constructor delete entropy exception fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer map metaprog mmap mprotect new nullref nullstring popcount prime private randbin rapidjson register segfault setuid sort sse static_assert template thread throw typeid unlink unsigned vector virtual voidtype 
+.PHONY: all clean animate argparse argsort asm auto bitset bloat bus constructor dataframe delete demangle entropy exception fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer map metaprog mmap mprotect mystream new nullref nullstring popcount prime private randbin rapidjson register segfault setuid sort split sse static_assert template thread throw typeid unlink unsigned unwind vector virtual2 virtual voidtype 
 
 clean:
 	rm -rf bin
@@ -55,9 +55,19 @@ constructor: bin/constructor
 bin/constructor: constructor.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
+dataframe: bin/dataframe
+
+bin/dataframe: dataframe.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
 delete: bin/delete
 
 bin/delete: delete.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+demangle: bin/demangle
+
+bin/demangle: demangle.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 entropy: bin/entropy
@@ -135,6 +145,11 @@ mprotect: bin/mprotect
 bin/mprotect: mprotect.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
+mystream: bin/mystream
+
+bin/mystream: mystream.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
 new: bin/new
 
 bin/new: new.cpp
@@ -190,6 +205,11 @@ sort: bin/sort
 bin/sort: sort.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
+split: bin/split
+
+bin/split: split.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
 sse: bin/sse
 
 bin/sse: sse.cpp
@@ -230,6 +250,11 @@ unsigned: bin/unsigned
 bin/unsigned: unsigned.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
+unwind: bin/unwind
+
+bin/unwind: unwind.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
 vector: bin/vector
 
 bin/vector: vector.cpp
@@ -238,6 +263,11 @@ bin/vector: vector.cpp
 virtual: bin/virtual
 
 bin/virtual: virtual.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+virtual2: bin/virtual2
+
+bin/virtual2: virtual2.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 voidtype: bin/voidtype
