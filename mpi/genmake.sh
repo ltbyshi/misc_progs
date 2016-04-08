@@ -9,9 +9,11 @@ fi
 if [ -f "LocalConfig.mk" ];then
     echo -e 'include LocalConfig.mk'
 fi
-echo -e 'CXX=g++'
+echo -e 'AR=ar'
+echo -e 'CXX=mpic++'
+echo -e 'CC=mpicc'
 echo -e 'CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include'
-echo -e 'LDFLAGS=-lm -lpthread'
+echo -e 'LDFLAGS=-L./lib -lm -lpthread'
 echo -e 
 #echo -e "BINS=bin \$(addprefix bin/,$AllTargets)\n"
 echo -e "BINS=bin $AllTargets\n"
@@ -19,7 +21,8 @@ echo -e 'all: $(BINS)\n'
 echo -e ".PHONY: all clean $AllTargets\n"
 echo -e 'clean:\n\trm -rf bin src/*.o lib/*.a\n'
 echo -e 'bin:\n\tmkdir $@\n'
-for t in $AllTargets;do
+echo -e 'lib:\n\tmkdir $@\n'
+for t in $Targets;do
     echo -e "$t: bin/$t\n"
 done
 for t in $Targets;do

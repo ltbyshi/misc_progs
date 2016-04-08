@@ -70,6 +70,16 @@ public:
         _header.resize(0);
     }
     
+    void read_table(const std::string& filename,
+                    bool header = true,
+                    const std::string& types="",
+                    char delimiter='\t')
+    {
+        InputFileStream fin(filename);
+        read_table(fin, header, types, delimiter);
+        fin.close();
+    }
+    
     void read_table(std::istream& fin,
                     bool header = true,
                     const std::string& types="",
@@ -151,7 +161,7 @@ public:
     }
     
     template <typename Type>
-    Series<Type>& icol(size_t i){
+    Series<Type>& col(size_t i){
         return *((Series<Type>*)_series[i]);
     }
     

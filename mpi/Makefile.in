@@ -1,0 +1,14 @@
+# libMPIUtil
+libMPIUtil: lib lib/libMPIUtil.a
+
+libMPIUtil.o: libMPIUtil.cpp
+	$(MPICXX) $(CXXFLAGS) -c -o $@ $< $(LDFLAGS)
+
+lib/libMPIUtil.a: libMPIUtil.o
+	$(AR) rcs $@ $?
+
+# critical
+critical: bin/critical lib/libMPIUtil.a
+
+bin/critical: critical.cpp
+	$(MPICXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) -lMPIUtil

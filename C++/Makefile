@@ -3,274 +3,318 @@ CXX=g++
 CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include
 LDFLAGS=-lm -lpthread
 
-BINS=bin animate argparse argsort asm auto bitset bloat bus constructor dataframe delete demangle entropy exception fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer map metaprog mmap mprotect mystream new nullref nullstring popcount prime private randbin rapidjson register segfault setuid sort split sse static_assert template thread throw typeid unlink unsigned unwind vector virtual2 virtual voidtype 
+BINS=bin animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr sort split sse static_assert template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype 
 
 all: $(BINS)
 
-.PHONY: all clean animate argparse argsort asm auto bitset bloat bus constructor dataframe delete demangle entropy exception fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer map metaprog mmap mprotect mystream new nullref nullstring popcount prime private randbin rapidjson register segfault setuid sort split sse static_assert template thread throw typeid unlink unsigned unwind vector virtual2 virtual voidtype 
+.PHONY: all clean animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr sort split sse static_assert template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype 
 
 clean:
-	rm -rf bin
+	rm -rf bin src/*.o lib/*.a
 
 bin:
 	mkdir $@
 
 animate: bin/animate
 
-bin/animate: animate.cpp
-	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+argparse: bin/argparse
 
 argsort: bin/argsort
+
+asm: bin/asm
+
+auto: bin/auto
+
+bitset: bin/bitset
+
+bloat: bin/bloat
+
+boost_filesystem: bin/boost_filesystem
+
+boost_proto: bin/boost_proto
+
+bus: bin/bus
+
+constructor: bin/constructor
+
+dataframe: bin/dataframe
+
+delete: bin/delete
+
+demangle: bin/demangle
+
+encrypt: bin/encrypt
+
+entropy: bin/entropy
+
+exception: bin/exception
+
+externc: bin/externc
+
+fclose: bin/fclose
+
+filedes: bin/filedes
+
+fisher: bin/fisher
+
+fopen: bin/fopen
+
+fpe: bin/fpe
+
+fpointer: bin/fpointer
+
+getopt: bin/getopt
+
+goto: bin/goto
+
+hdf5test: bin/hdf5test
+
+ispointer: bin/ispointer
+
+malloc: bin/malloc
+
+map: bin/map
+
+metaprog: bin/metaprog
+
+mmap: bin/mmap
+
+mprotect: bin/mprotect
+
+mystream: bin/mystream
+
+new: bin/new
+
+nullref: bin/nullref
+
+nullstring: bin/nullstring
+
+openmp: bin/openmp
+
+popcount: bin/popcount
+
+prime: bin/prime
+
+private: bin/private
+
+randbin: bin/randbin
+
+rapidjson: bin/rapidjson
+
+register: bin/register
+
+segfault: bin/segfault
+
+setops: bin/setops
+
+setuid: bin/setuid
+
+sharedptr: bin/sharedptr
+
+sort: bin/sort
+
+split: bin/split
+
+sse: bin/sse
+
+static_assert: bin/static_assert
+
+template: bin/template
+
+thread: bin/thread
+
+throw: bin/throw
+
+typeid: bin/typeid
+
+undefined: bin/undefined
+
+unicode: bin/unicode
+
+unlink: bin/unlink
+
+unsigned: bin/unsigned
+
+unwind: bin/unwind
+
+vector: bin/vector
+
+virtual2: bin/virtual2
+
+virtual: bin/virtual
+
+voidtype: bin/voidtype
+
+bin/animate: animate.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/argsort: argsort.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-asm: bin/asm
-
 bin/asm: asm.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-auto: bin/auto
 
 bin/auto: auto.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-bitset: bin/bitset
-
 bin/bitset: bitset.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-bloat: bin/bloat
 
 bin/bloat: bloat.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-bus: bin/bus
-
 bin/bus: bus.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-constructor: bin/constructor
 
 bin/constructor: constructor.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-dataframe: bin/dataframe
-
 bin/dataframe: dataframe.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-delete: bin/delete
 
 bin/delete: delete.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-demangle: bin/demangle
-
 bin/demangle: demangle.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-entropy: bin/entropy
 
 bin/entropy: entropy.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-exception: bin/exception
-
 bin/exception: exception.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-fclose: bin/fclose
+bin/externc: externc.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/fclose: fclose.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-filedes: bin/filedes
-
 bin/filedes: filedes.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-fisher: bin/fisher
 
 bin/fisher: fisher.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-fopen: bin/fopen
-
 bin/fopen: fopen.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-fpe: bin/fpe
 
 bin/fpe: fpe.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-fpointer: bin/fpointer
-
 bin/fpointer: fpointer.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-getopt: bin/getopt
 
 bin/getopt: getopt.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-goto: bin/goto
-
 bin/goto: goto.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-ispointer: bin/ispointer
 
 bin/ispointer: ispointer.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-map: bin/map
+bin/malloc: malloc.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/map: map.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-metaprog: bin/metaprog
-
 bin/metaprog: metaprog.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-mmap: bin/mmap
 
 bin/mmap: mmap.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-mprotect: bin/mprotect
-
 bin/mprotect: mprotect.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-mystream: bin/mystream
 
 bin/mystream: mystream.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-new: bin/new
-
 bin/new: new.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-nullref: bin/nullref
 
 bin/nullref: nullref.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-nullstring: bin/nullstring
-
 bin/nullstring: nullstring.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-popcount: bin/popcount
 
 bin/popcount: popcount.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-prime: bin/prime
-
 bin/prime: prime.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-private: bin/private
 
 bin/private: private.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-randbin: bin/randbin
-
 bin/randbin: randbin.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-register: bin/register
 
 bin/register: register.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-segfault: bin/segfault
-
 bin/segfault: segfault.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-setuid: bin/setuid
+bin/setops: setops.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/setuid: setuid.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-sort: bin/sort
+bin/sharedptr: sharedptr.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/sort: sort.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-split: bin/split
-
 bin/split: split.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-sse: bin/sse
 
 bin/sse: sse.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-static_assert: bin/static_assert
-
 bin/static_assert: static_assert.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-template: bin/template
 
 bin/template: template.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-thread: bin/thread
-
 bin/thread: thread.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-throw: bin/throw
 
 bin/throw: throw.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-typeid: bin/typeid
-
 bin/typeid: typeid.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-unlink: bin/unlink
+bin/undefined: undefined.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+bin/unicode: unicode.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/unlink: unlink.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-unsigned: bin/unsigned
-
 bin/unsigned: unsigned.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-unwind: bin/unwind
 
 bin/unwind: unwind.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-vector: bin/vector
-
 bin/vector: vector.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-virtual: bin/virtual
 
 bin/virtual: virtual.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
-virtual2: bin/virtual2
-
 bin/virtual2: virtual2.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
-
-voidtype: bin/voidtype
 
 bin/voidtype: voidtype.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
@@ -300,4 +344,28 @@ ifdef RAPIDJSON_INCLUDE_PATH
 endif
 bin/rapidjson: rapidjson.cpp
 	$(CXX) $(CXXFLAGS) $(RAPIDJSON_CXXFLAGS) -o $@ $< $(LDFLAGS)
-	
+
+
+BOOST_CXXFLAGS = 
+ifdef BOOST_INCLUDE_PATH
+	BOOST_CXXFLAGS = -I$(BOOST_INCLUDE_PATH)
+endif
+BOOST_LDFLAGS =
+ifdef BOOST_LIBRARY_PATH
+	BOOST_LDFLAGS = -L$(BOOST_LIBRARY_PATH)
+endif
+# boost_filesystem
+bin/boost_filesystem: boost_filesystem.cpp
+	$(CXX) $(CXXFLAGS) $(BOOST_CXXFLAGS) -o $@ $< $(LDFLAGS) $(BOOST_LDFLAGS) -lboost_system -lboost_filesystem
+
+# boost_proto
+bin/boost_proto: boost_proto.cpp
+	$(CXX) $(CXXFLAGS) $(BOOST_CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+# openmp
+bin/openmp: openmp.cpp
+	$(CXX) $(CXXFLAGS) -fopenmp -o $@ $< $(LDFLAGS)
+
+# encrypt
+bin/encrypt: encrypt.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) -lcrypto

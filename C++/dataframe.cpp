@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     for(size_t r = 0; r < 5; r ++)
     {
         for(size_t c = 0; c < df.ncol(); c ++)
-            cout << df.icol<string>(c)[r] << "\t";
+            cout << df.col<string>(c)[r] << "\t";
         cout << endl;
     }
     return 0;

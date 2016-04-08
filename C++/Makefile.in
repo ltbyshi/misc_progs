@@ -22,4 +22,38 @@ ifdef RAPIDJSON_INCLUDE_PATH
 endif
 bin/rapidjson: rapidjson.cpp
 	$(CXX) $(CXXFLAGS) $(RAPIDJSON_CXXFLAGS) -o $@ $< $(LDFLAGS)
-	
+
+
+BOOST_CXXFLAGS = 
+ifdef BOOST_INCLUDE_PATH
+	BOOST_CXXFLAGS = -I$(BOOST_INCLUDE_PATH)
+endif
+BOOST_LDFLAGS =
+ifdef BOOST_LIBRARY_PATH
+	BOOST_LDFLAGS = -L$(BOOST_LIBRARY_PATH)
+endif
+# boost_filesystem
+bin/boost_filesystem: boost_filesystem.cpp
+	$(CXX) $(CXXFLAGS) $(BOOST_CXXFLAGS) -o $@ $< $(LDFLAGS) $(BOOST_LDFLAGS) -lboost_system -lboost_filesystem
+
+# boost_proto
+bin/boost_proto: boost_proto.cpp
+	$(CXX) $(CXXFLAGS) $(BOOST_CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+# openmp
+bin/openmp: openmp.cpp
+	$(CXX) $(CXXFLAGS) -fopenmp -o $@ $< $(LDFLAGS)
+
+# encrypt
+bin/encrypt: encrypt.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) -lcrypto
+
+EIGEN_CXXFLAGS =
+ifdef EIGEN_INCLUDE_PATH
+	EIGEN_CXXFLAGS = -I$(EIGEN_INCLUDE_PATH)
+endif
+
+# svd
+bin/svd: svd.cpp
+	$(CXX) $(CXXFLAGS) $(EIGEN_CXXFLAGS) -o $@ $< $(LDFLAGS)
+

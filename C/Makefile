@@ -1,105 +1,187 @@
-CXX=gcc
-CFLAGS=-std=c99 -g -Wall -D_POSIX_C_SOURCE=200112L
-LDFLAGS=-lm -lrt -lpthread
-BINS=bin $(addprefix bin/,alarm asm atomic bitfield brk builtin clearline complex factorial filelock float free gets ioctl jit longjmp memfrag optimize pipe poll scrub sdlaudio shm signal struct syscall truncate unbuffered vec wchar )
+CC=gcc
+CFLAGS=-g -Wall -I./include
+LDFLAGS=-lrt -lm -lpthread
+
+BINS=bin alarm asm atomic bitfield brk builtin clearline complex factorial filelock float flock free gets glibc-hack ioctl jit longjmp lspy memfrag optimize pipe poll scrub sdlaudio shm signal struct syscall truncate unbuffered vec wchar 
 
 all: $(BINS)
 
-.PHONY: all clean
+.PHONY: all clean alarm asm atomic bitfield brk builtin clearline complex factorial filelock float flock free gets glibc-hack ioctl jit longjmp lspy memfrag optimize pipe poll scrub sdlaudio shm signal struct syscall truncate unbuffered vec wchar 
 
 clean:
-	rm -rf bin
+	rm -rf bin src/*.o lib/*.a
 
 bin:
 	mkdir $@
 
+lib:
+	mkdir $@
+
+alarm: bin/alarm
+
+asm: bin/asm
+
+atomic: bin/atomic
+
+bitfield: bin/bitfield
+
+brk: bin/brk
+
+builtin: bin/builtin
+
+clearline: bin/clearline
+
+complex: bin/complex
+
+factorial: bin/factorial
+
+filelock: bin/filelock
+
+float: bin/float
+
+flock: bin/flock
+
+free: bin/free
+
+gets: bin/gets
+
+ioctl: bin/ioctl
+
+jit: bin/jit
+
+longjmp: bin/longjmp
+
+memfrag: bin/memfrag
+
+optimize: bin/optimize
+
+pipe: bin/pipe
+
+poll: bin/poll
+
+scrub: bin/scrub
+
+sdlaudio: bin/sdlaudio
+
+shm: bin/shm
+
+signal: bin/signal
+
+struct: bin/struct
+
+syscall: bin/syscall
+
+truncate: bin/truncate
+
+unbuffered: bin/unbuffered
+
+vec: bin/vec
+
+wchar: bin/wchar
+
 bin/alarm: alarm.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/asm: asm.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/atomic: atomic.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/bitfield: bitfield.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/brk: brk.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/builtin: builtin.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/clearline: clearline.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/complex: complex.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/factorial: factorial.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/filelock: filelock.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/float: float.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
+bin/flock: flock.c
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/free: free.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/gets: gets.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/ioctl: ioctl.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/jit: jit.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/longjmp: longjmp.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/memfrag: memfrag.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/optimize: optimize.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/pipe: pipe.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/poll: poll.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/scrub: scrub.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/sdlaudio: sdlaudio.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/shm: shm.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/signal: signal.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/struct: struct.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/syscall: syscall.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/truncate: truncate.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/unbuffered: unbuffered.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/vec: vec.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/wchar: wchar.c
-	$(CXX) $(CFLAGS) -o $@ $? $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
+#### custom rules
+# glibc-hack
+glibc-hack: lib lib/glibc-hack.so
+
+lib/glibc-hack.so: glibc-hack.c
+	$(CC) $(CFLAGS) -shared -fPIC -o $@ $< $(LDFLAGS)
+
+# lspy
+lspy: lib lib/lspy.so
+
+lib/lspy.so: lspy.c
+	mpicc $(CFLAGS) -D_GNU_SOURCE=1  -shared -fPIC -o $@ $< $(LDFLAGS) -ldl
 

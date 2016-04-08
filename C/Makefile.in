@@ -1,0 +1,12 @@
+# glibc-hack
+glibc-hack: lib lib/glibc-hack.so
+
+lib/glibc-hack.so: glibc-hack.c
+	$(CC) $(CFLAGS) -shared -fPIC -o $@ $< $(LDFLAGS)
+
+# lspy
+lspy: lib lib/lspy.so
+
+lib/lspy.so: lspy.c
+	cc $(CFLAGS) -D_GNU_SOURCE=1  -shared -fPIC -o $@ $< $(LDFLAGS) -ldl
+

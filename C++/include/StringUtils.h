@@ -26,4 +26,9 @@ std::vector<std::string> Split(const std::string& s,
     return v;
 }
 
+template <typename Type>
+inline std::string ToString(Type val){
+    return std::to_string(val);
+}
+
 #endif
