@@ -110,7 +110,7 @@ FILE *fopen(const char *path, const char *mode)
 }
 
 typedef FILE* (*REAL_fopen64)(const char *path, const char *mode);
-static REAL_fopen real_fopen64 = NULL;
+static REAL_fopen64 real_fopen64 = NULL;
 
 FILE *fopen64(const char *path, const char *mode)
 {
@@ -130,6 +130,77 @@ FILE *fopen64(const char *path, const char *mode)
     }
     return real_fopen64(path, mode);
 }
+
+#include <dirent.h>
+typedef struct dirent* (*REAL_readdir)(DIR* dirp);
+static REAL_readdir real_readdir = NULL;
+
+struct dirent* readdir(DIR* dirp)
+{
+    if(!real_readdir)
+        real_readdir = (REAL_readdir)dlsym(RTLD_NEXT, "readdir");
+    if(!real_readdir)
+    {
+        fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "readdir");
+        abort();
+    }
+    
+    fprintf(stderr, "[lspy] readdir(%p)\n", dirp);
+    return real_readdir(dirp);
+}
+
+typedef DIR* (*REAL_opendir)(const char* name);
+static REAL_opendir real_opendir = NULL;
+
+DIR* opendir(const char* name)
+{
+    if(!real_opendir)
+        real_opendir = (REAL_opendir)dlsym(RTLD_NEXT, "opendir");
+    if(!real_opendir)
+    {
+        fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "opendir");
+        abort();
+    }
+    
+    fprintf(stderr, "[lspy] opendir('%s')\n", name);
+    return real_opendir(name);
+}
+
+typedef int (*REAL_access)(const char *path, int amode);
+static REAL_access real_access = NULL;
+
+int access(const char *path, int amode)
+{
+    if(!real_access)
+        real_access = (REAL_access)dlsym(RTLD_NEXT, "access");
+    if(!real_access)
+    {
+        fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "access");
+        abort();
+    }
+    
+    fprintf(stderr, "[lspy] access('%s', %d)\n", path, amode);
+    return real_access(path, amode);
+}
+
+#include <sys/stat.h>
+typedef int (*REAL_stat)(const char*  path, struct stat* buf);
+static REAL_stat real_stat = NULL;
+
+int stat(const char *path, struct stat *buf)
+{
+    if(!real_stat)
+        real_stat = (REAL_stat)dlsym(RTLD_NEXT, "stat");
+    if(!real_stat)
+    {
+        fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "stat");
+        abort();
+    }
+    
+    fprintf(stderr, "[lspy] stat('%s', %p)\n", path, buf);
+    return real_stat(path, buf);
+}
+
 
 #if ENABLE_MPI
 #include <mpi.h>

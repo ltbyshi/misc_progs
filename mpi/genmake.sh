@@ -12,6 +12,8 @@ fi
 echo -e 'AR=ar'
 echo -e 'CXX=mpic++'
 echo -e 'CC=mpicc'
+echo -e 'MPICXX=mpic++'
+echo -e 'MPICC=mpicc'
 echo -e 'CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include'
 echo -e 'LDFLAGS=-L./lib -lm -lpthread'
 echo -e 

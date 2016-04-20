@@ -3,11 +3,11 @@ CXX=g++
 CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include
 LDFLAGS=-lm -lpthread
 
-BINS=bin animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr sort split sse static_assert template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype 
+BINS=bin animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
 
 all: $(BINS)
 
-.PHONY: all clean animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr sort split sse static_assert template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype 
+.PHONY: all clean animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
 
 clean:
 	rm -rf bin src/*.o lib/*.a
@@ -111,6 +111,8 @@ setuid: bin/setuid
 
 sharedptr: bin/sharedptr
 
+signal_template: bin/signal_template
+
 sort: bin/sort
 
 split: bin/split
@@ -118,6 +120,8 @@ split: bin/split
 sse: bin/sse
 
 static_assert: bin/static_assert
+
+svd: bin/svd
 
 template: bin/template
 
@@ -144,6 +148,8 @@ virtual2: bin/virtual2
 virtual: bin/virtual
 
 voidtype: bin/voidtype
+
+wctime: bin/wctime
 
 bin/animate: animate.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
@@ -268,6 +274,9 @@ bin/setuid: setuid.cpp
 bin/sharedptr: sharedptr.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
+bin/signal_template: signal_template.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
 bin/sort: sort.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
@@ -317,6 +326,9 @@ bin/virtual2: virtual2.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/voidtype: voidtype.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+bin/wctime: wctime.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 #### custom rules
@@ -369,3 +381,13 @@ bin/openmp: openmp.cpp
 # encrypt
 bin/encrypt: encrypt.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) -lcrypto
+
+EIGEN_CXXFLAGS =
+ifdef EIGEN_INCLUDE_PATH
+	EIGEN_CXXFLAGS = -I$(EIGEN_INCLUDE_PATH)
+endif
+
+# svd
+bin/svd: svd.cpp
+	$(CXX) $(CXXFLAGS) $(EIGEN_CXXFLAGS) -o $@ $< $(LDFLAGS)
+

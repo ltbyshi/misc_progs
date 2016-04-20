@@ -9,12 +9,10 @@ using namespace std;
 int main()
 {
     srand(time(0));
-    #pragma omp parallel num_threads(10)
+    #pragma omp parallel
     {
         //sleep(1);
         cout << "Thread " << omp_get_thread_num() << endl;
-        if((rand() % 3) == 0)
-            *((int*)0) = 0;
     }
     return 0;
 }
