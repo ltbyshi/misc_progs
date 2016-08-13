@@ -8,5 +8,10 @@ lib/glibc-hack.so: glibc-hack.c
 lspy: lib lib/lspy.so
 
 lib/lspy.so: lspy.c
-	cc $(CFLAGS) -D_GNU_SOURCE=1  -shared -fPIC -o $@ $< $(LDFLAGS) -ldl
+	$(CC) $(CFLAGS) -D_GNU_SOURCE=1 -shared -fPIC -o $@ $< $(LDFLAGS) -ldl
 
+# libjail
+libjail: lib lib/libjail.so
+
+lib/libjail.so: libjail.c
+	$(CC) $(CFLAGS) -D_GNU_SOURCE=1 -shared -fPIC -o $@ $< $(LDFLAGS) -ldl

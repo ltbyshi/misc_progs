@@ -4,7 +4,6 @@
 #$ -N {JobName}
 #$ -o {LogDir}/{JobName}.stdout.log
 #$ -e {LogDir}/{JobName}.stderr.log
-#$ -pe mpi {NumJobs}
 
 . ~/.bashrc
 
@@ -20,4 +19,5 @@ printf '' > {LogDir}/{JobName}.stderr.log
 
 verbose_cmd date
 verbose_cmd hostname
-#verbose_cmd mpirun -np $NSLOTS ~/Tests/mpi/bin/simple
+# commands are here
+

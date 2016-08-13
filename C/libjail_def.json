@@ -1,0 +1,133 @@
+{
+    "fopen64": {
+        "ret_type": "FILE*",
+        "args": [ ["const char*", "path"],
+            ["const char*", "mode"] ],
+        "arg_path": "path",
+        "ret_val": "NULL"
+    }, 
+    "fopen": {
+        "ret_type": "FILE*",
+        "args": [ ["const char*", "path"],
+            ["const char*", "mode"] ],
+        "arg_path": "path",
+        "ret_val": "NULL"
+    },
+    "freopen": {
+        "ret_type": "FILE*",
+        "args": [ ["const char*", "path"],
+            ["const char*", "mode"],
+            ["FILE*", "stream"] ],
+        "arg_path": "path",
+        "ret_val": "NULL"
+    },
+    "freopen64": {
+        "ret_type": "FILE*",
+        "args": [ ["const char*", "path"],
+            ["const char*", "mode"],
+            ["FILE*", "stream"] ],
+        "arg_path": "path",
+        "ret_val": "NULL"
+    },
+    "open": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"],
+            ["int", "flags"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "open64": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"],
+            ["int", "flags"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "creat": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"],
+            ["mode_t", "mode"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "openat": {
+        "ret_type": "int",
+        "args": [ ["int", "dirfd"],
+            ["const char*", "path"],
+            ["int", "flags"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "openat64": {
+        "ret_type": "int",
+        "args": [ ["int", "dirfd"],
+            ["const char*", "path"],
+            ["int", "flags"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "remove": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "unlink": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "unlinkat": {
+        "ret_type": "int",
+        "args": [ ["int", "fd"],
+            ["const char*", "path"],
+            ["int", "flag"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "rmdir": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "mkdir": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"],
+            ["mode_t", "mode"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "mkdirat": {
+        "ret_type": "int",
+        "args": [ ["int", "fd"],
+            ["const char*", "path"],
+            ["mode_t", "mode"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    },
+    "rename": {
+        "ret_type": "int",
+        "args": [ ["const char*", "oldpath"],
+            ["const char*", "newpath"] ],
+        "arg_path": "oldpath",
+        "ret_val": "-1"
+    },
+    "renameat": {
+        "ret_type": "int",
+        "args": [ ["int", "oldfd"],
+            ["const char*", "oldpath"],
+            ["int", "newfd"],
+            ["const char*", "newpath"] ],
+        "arg_path": "oldpath",
+        "ret_val": "-1"
+    },
+    "truncate": {
+        "ret_type": "int",
+        "args": [ ["const char*", "path"],
+            ["off_t", "length"] ],
+        "arg_path": "path",
+        "ret_val": "-1"
+    }
+}

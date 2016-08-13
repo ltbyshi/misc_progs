@@ -1,12 +1,13 @@
 #! /bin/bash
 #$ -S /bin/bash
-#$ -cwd
 #$ -N {JobName}
-#$ -o {LogDir}/{JobName}.stdout.log
-#$ -e {LogDir}/{JobName}.stderr.log
-#$ -pe mpi {NumJobs}
+#$ -o {LogDir}/{JobName}/stdout.$TASK_ID.log
+#$ -e {LogDir}/{JobName}/stderr.$TASK_ID.log
 
 . ~/.bashrc
+
+printf '' > {LogDir}/{JobName}/stdout.${SGE_TASK_ID}.log
+printf '' > {LogDir}/{JobName}/stderr.${SGE_TASK_ID}.log
 
 verbose_cmd(){
     echo '-----------------------------------------------------------------'
@@ -15,9 +16,6 @@ verbose_cmd(){
     $@
 }
 
-printf '' > {LogDir}/{JobName}.stdout.log
-printf '' > {LogDir}/{JobName}.stderr.log
-
 verbose_cmd date
 verbose_cmd hostname
-#verbose_cmd mpirun -np $NSLOTS ~/Tests/mpi/bin/simple
+# begin of commands

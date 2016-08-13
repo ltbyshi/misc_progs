@@ -3,11 +3,11 @@ CXX=g++
 CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include
 LDFLAGS=-lm -lpthread
 
-BINS=bin animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
+BINS=bin animate argparse argsort asm auto benchmark_sort bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp optimize popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
 
 all: $(BINS)
 
-.PHONY: all clean animate argparse argsort asm auto bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
+.PHONY: all clean animate argparse argsort asm auto benchmark_sort bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp optimize popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
 
 clean:
 	rm -rf bin src/*.o lib/*.a
@@ -24,6 +24,8 @@ argsort: bin/argsort
 asm: bin/asm
 
 auto: bin/auto
+
+benchmark_sort: bin/benchmark_sort
 
 bitset: bin/bitset
 
@@ -90,6 +92,8 @@ nullref: bin/nullref
 nullstring: bin/nullstring
 
 openmp: bin/openmp
+
+optimize: bin/optimize
 
 popcount: bin/popcount
 
@@ -161,6 +165,9 @@ bin/asm: asm.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/auto: auto.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+bin/benchmark_sort: benchmark_sort.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/bitset: bitset.cpp
@@ -245,6 +252,9 @@ bin/nullref: nullref.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/nullstring: nullstring.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+bin/optimize: optimize.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/popcount: popcount.cpp

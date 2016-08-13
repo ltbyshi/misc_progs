@@ -2,11 +2,11 @@ CC=gcc
 CFLAGS=-g -Wall -I./include
 LDFLAGS=-lrt -lm -lpthread
 
-BINS=bin alarm asm atomic bitfield brk builtin clearline complex factorial filelock float flock free gets glibc-hack ioctl jit longjmp lspy memfrag optimize pipe poll scrub sdlaudio shm signal struct syscall truncate unbuffered vec wchar 
+BINS=bin alarm asm atomic bitfield brk builtin clearline complex factorial fasta2fastq filelock float flock free gets glibc-hack ioctl jit libjail longjmp lspy memfile memfrag optimize pipe poll scrub sdlaudio setuid shm signal struct surun syscall truncate unbuffered vec wchar 
 
 all: $(BINS)
 
-.PHONY: all clean alarm asm atomic bitfield brk builtin clearline complex factorial filelock float flock free gets glibc-hack ioctl jit longjmp lspy memfrag optimize pipe poll scrub sdlaudio shm signal struct syscall truncate unbuffered vec wchar 
+.PHONY: all clean alarm asm atomic bitfield brk builtin clearline complex factorial fasta2fastq filelock float flock free gets glibc-hack ioctl jit libjail longjmp lspy memfile memfrag optimize pipe poll scrub sdlaudio setuid shm signal struct surun syscall truncate unbuffered vec wchar 
 
 clean:
 	rm -rf bin src/*.o lib/*.a
@@ -35,6 +35,8 @@ complex: bin/complex
 
 factorial: bin/factorial
 
+fasta2fastq: bin/fasta2fastq
+
 filelock: bin/filelock
 
 float: bin/float
@@ -51,6 +53,8 @@ jit: bin/jit
 
 longjmp: bin/longjmp
 
+memfile: bin/memfile
+
 memfrag: bin/memfrag
 
 optimize: bin/optimize
@@ -63,11 +67,15 @@ scrub: bin/scrub
 
 sdlaudio: bin/sdlaudio
 
+setuid: bin/setuid
+
 shm: bin/shm
 
 signal: bin/signal
 
 struct: bin/struct
+
+surun: bin/surun
 
 syscall: bin/syscall
 
@@ -106,6 +114,9 @@ bin/complex: complex.c
 bin/factorial: factorial.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
+bin/fasta2fastq: fasta2fastq.c
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
 bin/filelock: filelock.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
@@ -130,6 +141,9 @@ bin/jit: jit.c
 bin/longjmp: longjmp.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
+bin/memfile: memfile.c
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
 bin/memfrag: memfrag.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
@@ -148,6 +162,9 @@ bin/scrub: scrub.c
 bin/sdlaudio: sdlaudio.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
+bin/setuid: setuid.c
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
 bin/shm: shm.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
@@ -155,6 +172,9 @@ bin/signal: signal.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/struct: struct.c
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
+bin/surun: surun.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/syscall: syscall.c
@@ -183,5 +203,10 @@ lib/glibc-hack.so: glibc-hack.c
 lspy: lib lib/lspy.so
 
 lib/lspy.so: lspy.c
-	mpicc $(CFLAGS) -D_GNU_SOURCE=1  -shared -fPIC -o $@ $< $(LDFLAGS) -ldl
+	$(CC) $(CFLAGS) -D_GNU_SOURCE=1 -shared -fPIC -o $@ $< $(LDFLAGS) -ldl
 
+# libjail
+libjail: lib lib/libjail.so
+
+lib/libjail.so: libjail.c
+	$(CC) $(CFLAGS) -D_GNU_SOURCE=1 -shared -fPIC -o $@ $< $(LDFLAGS) -ldl

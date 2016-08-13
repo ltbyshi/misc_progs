@@ -21,5 +21,6 @@ rsync -t -rAv \
 }
 
 SyncTo cs3:/sdat2/KurokawaLab/binbin/Tests
-SyncTo ddbj:Tests
-SyncTo edb:Tests
+#SyncTo ddbj:Tests
+#SyncTo edb:Tests
+SyncTo ddbj2:Tests

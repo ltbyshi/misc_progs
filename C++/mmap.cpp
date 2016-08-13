@@ -44,10 +44,11 @@ int main(int argc, char** argv)
         exit(1);
     }
     // read
-    unsigned int sum = 0;
+    unsigned long sum = 0;
     char* p = (char*)mem;
     for(size_t i = 0; i < length; i += pagesize)
         sum += p[i];
+    cout << "sum of bytes: " << sum << endl;
     //fwrite(mem, length, 1, stdout);
     /* write
     srand((unsigned int)time(0));
