@@ -20,7 +20,10 @@ rsync -t -rAv \
   ./ $1
 }
 
-SyncTo cs3:/sdat2/KurokawaLab/binbin/Tests
+#SyncTo cs3:/sdat2/KurokawaLab/binbin/Tests
 #SyncTo ddbj:Tests
 #SyncTo edb:Tests
-SyncTo ddbj2:Tests
+#SyncTo ddbj2:Tests
+SyncTo ncrna:Projects/Tests
+SyncTo ibme:projects/tests
+SyncTo ddbj:projects/tests

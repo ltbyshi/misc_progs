@@ -20,7 +20,7 @@ echo -e ".PHONY: all clean $AllTargets\n"
 echo -e 'clean:\n\trm -rf bin src/*.o lib/*.a\n'
 echo -e 'bin:\n\tmkdir $@\n'
 for t in $AllTargets;do
-    echo -e "$t: bin/$t\n"
+    echo -e "$t: bin bin/$t\n"
 done
 for t in $Targets;do
     echo "bin/$t: $t.cpp"

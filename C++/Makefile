@@ -3,11 +3,11 @@ CXX=g++
 CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include
 LDFLAGS=-lm -lpthread
 
-BINS=bin animate argparse argsort asm auto benchmark_sort bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp optimize popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
+BINS=bin animate argparse argsort asm auto benchmark_sort bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp optimize popcount prime private randbin rapidjson register segfault setops setuid sharedptr shuf_bed signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
 
 all: $(BINS)
 
-.PHONY: all clean animate argparse argsort asm auto benchmark_sort bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp optimize popcount prime private randbin rapidjson register segfault setops setuid sharedptr signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
+.PHONY: all clean animate argparse argsort asm auto benchmark_sort bitset bloat boost_filesystem boost_proto bus constructor dataframe delete demangle encrypt entropy exception externc fclose filedes fisher fopen fpe fpointer getopt goto hdf5test ispointer malloc map metaprog mmap mprotect mystream new nullref nullstring openmp optimize popcount prime private randbin rapidjson register segfault setops setuid sharedptr shuf_bed signal_template sort split sse static_assert svd template thread throw typeid undefined unicode unlink unsigned unwind vector virtual2 virtual voidtype wctime 
 
 clean:
 	rm -rf bin src/*.o lib/*.a
@@ -15,145 +15,147 @@ clean:
 bin:
 	mkdir $@
 
-animate: bin/animate
+animate: bin bin/animate
 
-argparse: bin/argparse
+argparse: bin bin/argparse
 
-argsort: bin/argsort
+argsort: bin bin/argsort
 
-asm: bin/asm
+asm: bin bin/asm
 
-auto: bin/auto
+auto: bin bin/auto
 
-benchmark_sort: bin/benchmark_sort
+benchmark_sort: bin bin/benchmark_sort
 
-bitset: bin/bitset
+bitset: bin bin/bitset
 
-bloat: bin/bloat
+bloat: bin bin/bloat
 
-boost_filesystem: bin/boost_filesystem
+boost_filesystem: bin bin/boost_filesystem
 
-boost_proto: bin/boost_proto
+boost_proto: bin bin/boost_proto
 
-bus: bin/bus
+bus: bin bin/bus
 
-constructor: bin/constructor
+constructor: bin bin/constructor
 
-dataframe: bin/dataframe
+dataframe: bin bin/dataframe
 
-delete: bin/delete
+delete: bin bin/delete
 
-demangle: bin/demangle
+demangle: bin bin/demangle
 
-encrypt: bin/encrypt
+encrypt: bin bin/encrypt
 
-entropy: bin/entropy
+entropy: bin bin/entropy
 
-exception: bin/exception
+exception: bin bin/exception
 
-externc: bin/externc
+externc: bin bin/externc
 
-fclose: bin/fclose
+fclose: bin bin/fclose
 
-filedes: bin/filedes
+filedes: bin bin/filedes
 
-fisher: bin/fisher
+fisher: bin bin/fisher
 
-fopen: bin/fopen
+fopen: bin bin/fopen
 
-fpe: bin/fpe
+fpe: bin bin/fpe
 
-fpointer: bin/fpointer
+fpointer: bin bin/fpointer
 
-getopt: bin/getopt
+getopt: bin bin/getopt
 
-goto: bin/goto
+goto: bin bin/goto
 
-hdf5test: bin/hdf5test
+hdf5test: bin bin/hdf5test
 
-ispointer: bin/ispointer
+ispointer: bin bin/ispointer
 
-malloc: bin/malloc
+malloc: bin bin/malloc
 
-map: bin/map
+map: bin bin/map
 
-metaprog: bin/metaprog
+metaprog: bin bin/metaprog
 
-mmap: bin/mmap
+mmap: bin bin/mmap
 
-mprotect: bin/mprotect
+mprotect: bin bin/mprotect
 
-mystream: bin/mystream
+mystream: bin bin/mystream
 
-new: bin/new
+new: bin bin/new
 
-nullref: bin/nullref
+nullref: bin bin/nullref
 
-nullstring: bin/nullstring
+nullstring: bin bin/nullstring
 
-openmp: bin/openmp
+openmp: bin bin/openmp
 
-optimize: bin/optimize
+optimize: bin bin/optimize
 
-popcount: bin/popcount
+popcount: bin bin/popcount
 
-prime: bin/prime
+prime: bin bin/prime
 
-private: bin/private
+private: bin bin/private
 
-randbin: bin/randbin
+randbin: bin bin/randbin
 
-rapidjson: bin/rapidjson
+rapidjson: bin bin/rapidjson
 
-register: bin/register
+register: bin bin/register
 
-segfault: bin/segfault
+segfault: bin bin/segfault
 
-setops: bin/setops
+setops: bin bin/setops
 
-setuid: bin/setuid
+setuid: bin bin/setuid
 
-sharedptr: bin/sharedptr
+sharedptr: bin bin/sharedptr
 
-signal_template: bin/signal_template
+shuf_bed: bin bin/shuf_bed
 
-sort: bin/sort
+signal_template: bin bin/signal_template
 
-split: bin/split
+sort: bin bin/sort
 
-sse: bin/sse
+split: bin bin/split
 
-static_assert: bin/static_assert
+sse: bin bin/sse
 
-svd: bin/svd
+static_assert: bin bin/static_assert
 
-template: bin/template
+svd: bin bin/svd
 
-thread: bin/thread
+template: bin bin/template
 
-throw: bin/throw
+thread: bin bin/thread
 
-typeid: bin/typeid
+throw: bin bin/throw
 
-undefined: bin/undefined
+typeid: bin bin/typeid
 
-unicode: bin/unicode
+undefined: bin bin/undefined
 
-unlink: bin/unlink
+unicode: bin bin/unicode
 
-unsigned: bin/unsigned
+unlink: bin bin/unlink
 
-unwind: bin/unwind
+unsigned: bin bin/unsigned
 
-vector: bin/vector
+unwind: bin bin/unwind
 
-virtual2: bin/virtual2
+vector: bin bin/vector
 
-virtual: bin/virtual
+virtual2: bin bin/virtual2
 
-voidtype: bin/voidtype
+virtual: bin bin/virtual
 
-wctime: bin/wctime
+voidtype: bin bin/voidtype
+
+wctime: bin bin/wctime
 
 bin/animate: animate.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
@@ -282,6 +284,9 @@ bin/setuid: setuid.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/sharedptr: sharedptr.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+bin/shuf_bed: shuf_bed.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/signal_template: signal_template.cpp
