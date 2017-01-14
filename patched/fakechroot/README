@@ -1,0 +1,4 @@
+The sources are cloned from https://github.com/dex4er/fakechroot (version 2.19)
+The modified version of fakechroot behaves differently from fakechroot in that it subsitute all paths according a give pattern list.
+The pattern list can be specified by pass a FAKECHROOT_PATTERNS environment variable. Each pattern contains two strings separated by a semicolon (:). If the first string is found in the path, the first occurence of the string will be replaced with the second string in the pattern list. For example, if the pattern is "/usr/bin:/home/user/bin" and a path "/usr/bin/ls" is passed, then the path will be replaced with "/home/user/bin/ls". Multiple patterns are also supported, and should be separated by a newline character (\n). Some library functions may not work correctly until you set FAKECHROOT_BASE=/. It is recommended that you always set the FAKECHROOT_BASE variable, although its value has no effect.
+
