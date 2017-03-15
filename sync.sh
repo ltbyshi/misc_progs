@@ -6,7 +6,7 @@ SyncTo(){
         return 1
     fi
     echo "Sync to $1"
-rsync -t -rAv \
+rsync -t -rav \
   --exclude='.git/*' \
   --exclude='*.o' \
   --exclude='C/bin/' --exclude='C/lib/' --exclude="C/LocalConfig.mk" --exclude="C/Makefile" \
@@ -24,6 +24,7 @@ rsync -t -rAv \
 #SyncTo ddbj:Tests
 #SyncTo edb:Tests
 #SyncTo ddbj2:Tests
-SyncTo ncrna:Projects/Tests
-SyncTo ibme:projects/tests
-SyncTo ddbj:projects/tests
+#SyncTo ncrna:Projects/Tests
+#SyncTo ibme:projects/tests
+SyncTo gpuserver:projects/tests
+#SyncTo ddbj:projects/tests

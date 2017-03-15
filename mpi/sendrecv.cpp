@@ -13,6 +13,11 @@ using namespace std;
         cout << "TIMEIT "#expr": " << (end_usec - start_usec)/1e6 << " s." << endl; \
     }
 
+int world_size;
+int world_rank;
+char processor_name[1024];
+int name_len;
+
 int CheckSum(char* data, size_t size)
 {
     int sum = 0;
@@ -23,15 +28,32 @@ int CheckSum(char* data, size_t size)
     return sum;
 }
 
+void SendRecv(char* data, size_t block_size, size_t block_count, int sender, int receiver, bool reverse = false)
+{
+    for(size_t i = 0; i < block_count; i ++)
+    {
+        if(reverse)
+        {
+            MPI_Recv(data + i*block_size, block_size, MPI_BYTE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Send(data + i*block_size, block_size, MPI_BYTE, receiver, 0, MPI_COMM_WORLD);
+        }
+        else
+        {
+            MPI_Send(data + i*block_size, block_size, MPI_BYTE, receiver, 0, MPI_COMM_WORLD);
+            MPI_Recv(data + i*block_size, block_size, MPI_BYTE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+    }
+
+    cout << "[" << processor_name << "] send(" << world_rank << " => " << receiver << "): " 
+         << block_size*block_count << " bytes" << endl;
+    cout << "[" << processor_name << "] recv(" << sender << " <= " << world_rank << "): "
+         << block_size*block_count << " bytes" << endl;
+}
 int main()
 {
     MPI_Init(NULL, NULL);
-    int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-    int world_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-    char processor_name[1024];
-    int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
 
     if(world_size < 2)
@@ -41,7 +63,9 @@ int main()
     }
 
     bool need_check = false;
-    size_t data_size = (1UL << 20);
+    size_t block_size = (1UL << 20);
+    size_t block_count = 1024;
+    size_t data_size = block_size*block_count;
 
     cout << "Data size: " << data_size << " bytes" << endl;
     char* data = new char[data_size];
@@ -49,31 +73,18 @@ int main()
     {
         if(need_check)
             cout << "Check sum of data to be sent: " << CheckSum(data, data_size) << endl;
-        TIMEIT(MPI_Send(data, data_size, MPI_BYTE, 1, 0, MPI_COMM_WORLD));
-        cout << "[" << processor_name << "] 0 => 1: " 
-             << data_size << " bytes" << endl;
+        TIMEIT(SendRecv(data, block_size, block_count, world_size - 1, 1, false));
+        if(need_check)
+            cout << "Check sum of received data: " << CheckSum(data, data_size) << endl;
     }
     else
     {
         int sender = world_rank - 1;
-        TIMEIT(MPI_Recv(data, data_size, MPI_BYTE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE));
-        cout << "[" << processor_name << "] " 
-             << world_rank << " <= " << sender << ": " 
-             << data_size << " bytes" << endl;
+        int receiver = (world_rank + 1)%world_size;
+
+        TIMEIT(SendRecv(data, block_size, block_count, sender, receiver, true));
         if(need_check)
             cout << "Check sum of received data: " << CheckSum(data, data_size) << endl;
-        
-        int receiver = (world_rank + 1)%world_size;
-        TIMEIT(MPI_Send(data, data_size, MPI_BYTE, receiver, 0, MPI_COMM_WORLD));
-        cout << "[" << processor_name << "] "
-             << world_rank << " => " << receiver << ": " 
-             << data_size << " bytes" << endl;
-    }
-    if(world_rank == 0)
-    {
-        TIMEIT(MPI_Recv(data, data_size, MPI_BYTE, world_size - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE));
-        cout << "[" << processor_name << "] 0 <= " << world_size - 1 << ": "
-             << data_size << " bytes" << endl;
     }
     MPI_Finalize();
     delete[] data;

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-AllTargets=$(basename -a -s .cpp *.cpp | tr '\n' ' ')
+AllTargets=$(for f in *.cpp;do basename $f .cpp;done | tr '\n' ' ')
 if [ -f Makefile.in ];then
     Custom=$(grep '^#' Makefile.in | cut -d' ' -f2 | tr '\n' ' ')
     Targets=$(echo $AllTargets $Custom $Custom | tr ' ' '\n' | sort | uniq -u | tr '\n' ' ')
@@ -14,7 +14,7 @@ echo -e 'CXX=mpic++'
 echo -e 'CC=mpicc'
 echo -e 'MPICXX=mpic++'
 echo -e 'MPICC=mpicc'
-echo -e 'CXXFLAGS=-g -Wall -std=c++11 -Wno-pmf-conversions -I./include'
+echo -e 'CXXFLAGS=-g -Wall -Wno-pmf-conversions -I./include'
 echo -e 'LDFLAGS=-L./lib -lm -lpthread'
 echo -e 
 #echo -e "BINS=bin \$(addprefix bin/,$AllTargets)\n"

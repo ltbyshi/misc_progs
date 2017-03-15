@@ -1,6 +1,6 @@
 #! /bin/bash
 
-AllTargets=$(basename -a -s .c *.c | tr '\n' ' ')
+AllTargets=$(for f in *.c;do basename $f .c;done | tr '\n' ' ')
 if [ -f Makefile.in ];then
     Custom=$(grep '^#' Makefile.in | cut -d' ' -f2 | tr '\n' ' ')
     Targets=$(echo $AllTargets $Custom $Custom | tr ' ' '\n' | sort | uniq -u | tr '\n' ' ')
@@ -15,7 +15,7 @@ fi
 echo -e 'CC=gcc'
 echo -e 'CFLAGS=-g -Wall -I./include'
 echo -e 'LDFLAGS=-lrt -lm -lpthread'
-echo -e 
+echo -e
 #echo -e "BINS=bin \$(addprefix bin/,$AllTargets)\n"
 echo -e "BINS=bin $AllTargets\n"
 echo -e 'all: $(BINS)\n'

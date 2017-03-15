@@ -30,7 +30,7 @@ static int MatchPath(const char* path)
     bname = basename(basec);
     if(patc[0] != '/')
     {
-       strcpy(patc, cwd);   
+       strcpy(patc, cwd);
        strcat(patc, "/");
        strcat(patc, pattern);
     }
@@ -121,7 +121,7 @@ FILE *fopen64(const char *path, const char *mode)
         fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "fopen64");
         abort();
     }
-    
+
     if(MatchPath(path))
     {
         char fullpath[PATH_MAX];
@@ -144,7 +144,7 @@ struct dirent* readdir(DIR* dirp)
         fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "readdir");
         abort();
     }
-    
+
     fprintf(stderr, "[lspy] readdir(%p)\n", dirp);
     return real_readdir(dirp);
 }
@@ -161,7 +161,7 @@ DIR* opendir(const char* name)
         fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "opendir");
         abort();
     }
-    
+
     fprintf(stderr, "[lspy] opendir('%s')\n", name);
     return real_opendir(name);
 }
@@ -178,7 +178,7 @@ int access(const char *path, int amode)
         fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "access");
         abort();
     }
-    
+
     fprintf(stderr, "[lspy] access('%s', %d)\n", path, amode);
     return real_access(path, amode);
 }
@@ -196,7 +196,7 @@ int stat(const char *path, struct stat *buf)
         fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "stat");
         abort();
     }
-    
+
     fprintf(stderr, "[lspy] stat('%s', %p)\n", path, buf);
     return real_stat(path, buf);
 }
@@ -216,7 +216,7 @@ int MPI_Init(int *argc, char ***argv)
         fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "MPI_Init");
         abort();
     }
-           
+
     printf("[lspy] MPI_Init(%p, %p)\n", argc, argv);
     return real_MPI_Init(argc, argv);
 }
@@ -241,3 +241,23 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
     return real_connect(sockfd, addr, addrlen);
 }
 #endif
+
+/* execve */
+typedef int (*REAL_execve)(const char *filename, char *const argv[], char *const envp[]);
+static REAL_execve real_execve = NULL;
+
+int execve(const char *filename, char *const argv[], char *const envp[])
+{
+    if(!real_execve)
+        real_execve = (REAL_execve)dlsym(RTLD_NEXT, "execve");
+    if(!real_execve)
+    {
+        fprintf(stderr, "[lspy] Error: cannot resolve symbol %s\n", "execve");
+        abort();
+    }
+    printf("[lspy] execve(%s)", filename);
+    fflush(stdout);
+    return real_execve(filename, argv, envp);
+}
+
+/* execl */
