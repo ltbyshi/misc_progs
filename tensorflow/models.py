@@ -11,7 +11,7 @@ from collections import defaultdict
 tf_config = tf.ConfigProto(allow_soft_placement=True)
 tf_config.gpu_options.allow_growth=True
 
-def get_batches(X, y=None, batch_size=100, epochs=10):
+def get_batches(X, y=None, batch_size=100, epochs=1):
     n_batches = X.shape[0]/batch_size
     if n_batches*batch_size < X.shape[0]:
         n_batches += 1
@@ -680,6 +680,7 @@ class Model(object):
         if self.summary_dir is not None:
             summary_dir = os.path.join(self.summary_dir, datetime.datetime.now().isoformat()) + '-train'
             train_writer = tf.summary.FileWriter(summary_dir, get_session().graph)
+            saver = tf.train.Saver(tf.global_variables())
         get_session().run(tf.global_variables_initializer())
         for epoch in range(epochs):
             # classification/regression
@@ -707,6 +708,8 @@ class Model(object):
                     summary = get_session().run(self.summary_graph,
                         feed_dict={self.x: X_validation})
                 train_writer.add_summary(summary, epoch)
+                saver.save(get_session(), self.summary_dir + '/model.ckpt')
+
 
     def predict(self, X):
         return get_session().run(self.output, feed_dict={self.input: X})
@@ -799,7 +802,7 @@ def test_autoencoder():
     mnist = input_data.read_data_sets('/home/shibinbin/tmp/mnist_data/', one_hot=True)
     print mnist.train.images.shape, mnist.train.labels.shape
     model.fit(mnist.train.images,
-        validation_data=mnist.test.images)
+        validation_data=mnist.test.images, epochs=20)
 
 def test_mlp1():
     n_samples = 10000

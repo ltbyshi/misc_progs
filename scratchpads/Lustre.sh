@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install Lustre on CentOS 6
 # Download e2fsprogs rpms from https://downloads.hpdd.intel.com/public/e2fsprogs/latest/el6/RPMS/x86_64/
 # Download lustre server rpms from https://downloads.hpdd.intel.com/public/lustre/lustre-2.5.1/el6/server/RPMS/x86_64/
 # Download lustre client srpms from https://downloads.hpdd.intel.com/public/lustre/lustre-2.5.1/el6/client/SRPMS/
@@ -11,10 +12,23 @@ sudo yum localinstall *.rpm
 cd lustre-2.8.0/server
 sudo yum install *.rpm
 sudo reboot
-# Lustre 2.x manual: https://build.hpdd.intel.com/job/lustre-manual/lastSuccessfulBuild/artifact/lustre_manual.xhtml
 # build lustre client rpm packages
 rpmbuild --rebuild lustre-client-*.src.srpm
 
+# Install Lustre on CentOS 7
+# Download e2fsprogs RPMs from https://downloads.hpdd.intel.com/public/e2fsprogs/latest/el7/RPMS/x86_64/
+# Download lustre server RPMs from https://downloads.hpdd.intel.com/public/lustre/lustre-2.9.0/el7/server/RPMS/x86_64/
+# Download Lustre client RPMs from https://downloads.hpdd.intel.com/public/lustre/lustre-2.9.0/el7/client/RPMS/x86_64/
+# Lustre 2.x manual: https://build.hpdd.intel.com/job/lustre-manual/lastSuccessfulBuild/artifact/lustre_manual.xhtml
+
+# Install e2fsprogs RPMs
+cd e2fsprogs/
+sudo yum localinstall *.rpm
+# Install server RPMs ignoring kmod-lustre-osd-zfs, lustre-dkms, lustre-osd-zfs-mount
+cd server/
+sudo yum --exclude kmod-lustre-osd-zfs --exclude lustre-dkms --exclude lustre-osd-zfs-mount localinstall *.rpm
+# Restart server
+sudo reboot
 # create a /etc/modprobe.d/lustre.conf and specify the network interface for communication
 # options lnet networks=tcp0(eth1)
 
@@ -48,3 +62,7 @@ lfs setstripe -i start_ost -c 1 <dirname/filename>
 lfs quota <mount point>
 # Optional: set quota for a user
 lfs setquota -u <user> <mount point>
+
+# start lustre on boot
+chkconfig --add lnet
+chkconfig --add lustre

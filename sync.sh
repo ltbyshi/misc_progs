@@ -28,3 +28,4 @@ rsync -t -rav \
 #SyncTo ibme:projects/tests
 SyncTo gpuserver:projects/tests
 #SyncTo ddbj:projects/tests
+SyncTo gpudesktop:projects/tests
