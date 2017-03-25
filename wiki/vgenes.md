@@ -117,9 +117,9 @@ Lustre startup script for MGS server (mds0): **/etc/init.d/lustre-server***
 
 start() {
     [ -d /mnt/lustre/mdt ] || mkdir -p /mnt/lustre/mdt
-    mountpoint -q /mnt/lustre/mdt || mount.lustre /dev/sdb /mnt/lustre/mdt
+    mountpoint -q /mnt/lustre/mdt || mount.lustre /dev/sdb1 /mnt/lustre/mdt
     [ -d /mnt/lustre/ost ] || mkdir -p /mnt/lustre/ost
-    mountpoint -q /mnt/lustre/ost || mount.lustre /dev/sdc /mnt/lustre/ost
+    mountpoint -q /mnt/lustre/ost || mount.lustre /dev/sdb2 /mnt/lustre/ost
     [ -d /lustre ] || mkdir /lustre
     mountpoint -q /lustre || mount.lustre -o localflock mds0@tcp:/lustre /lustre
 }
