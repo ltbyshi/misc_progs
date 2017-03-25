@@ -105,7 +105,134 @@ Start Lustre kernel modules
 systemctl start lnet
 systemctl start lustre
 ```
-Lustre startup script for
+Lustre startup script for MGS server (mds0): **/etc/init.d/lustre-server***
+```
+#!/bin/bash
+# chkconfig: 2345 20 80
+# Required-Start: lnet lustre
+# Mount the Lustre server
+
+# Source function library.
+. /etc/init.d/functions
+
+start() {
+    [ -d /mnt/lustre/mdt ] || mkdir -p /mnt/lustre/mdt
+    mountpoint -q /mnt/lustre/mdt || mount.lustre /dev/sdb /mnt/lustre/mdt
+    [ -d /mnt/lustre/ost ] || mkdir -p /mnt/lustre/ost
+    mountpoint -q /mnt/lustre/ost || mount.lustre /dev/sdc /mnt/lustre/ost
+    [ -d /lustre ] || mkdir /lustre
+    mountpoint -q /lustre || mount.lustre -o localflock mds0@tcp:/lustre /lustre
+}
+
+stop() {
+    umount /lustre
+    umount /mnt/lustre/ost
+}
+
+case "$1" in
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+       # code to check status of app comes here
+       # example: status program_name
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0
+```
+Lustre startup script for OSS server (oss1): **/etc/init.d/lustre-server**
+```
+#!/bin/bash
+# chkconfig: 2345 20 80
+# Required-Start: lnet lustre
+# Mount the Lustre server
+
+# Source function library.
+. /etc/init.d/functions
+
+start() {
+    [ -d /mnt/lustre/ost ] || mkdir -p /mnt/lustre/ost
+    mountpoint -q /mnt/lustre/ost || mount.lustre /dev/sdb /mnt/lustre/ost
+    [ -d /lustre ] || mkdir /lustre
+    mountpoint -q /lustre || mount.lustre -o localflock mds0@tcp:/lustre /lustre
+}
+
+stop() {
+    umount /lustre
+    umount /mnt/lustre/ost
+}
+
+case "$1" in
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+       # code to check status of app comes here
+       # example: status program_name
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0
+```
+Lustre startup script for clients: **/etc/init.d/lustre-client**
+```
+#!/bin/bash
+# chkconfig: 2345 20 80
+# Required-Start: lnet lustre
+# Mount the Lustre server
+
+# Source function library.
+. /etc/init.d/functions
+
+start() {
+    [ -d /lustre ] || mkdir /lustre
+    mountpoint -q /lustre || mount.lustre -o localflock mds0@tcp:/lustre /lustre
+}
+
+stop() {
+    umount /lustre
+}
+
+case "$1" in
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+       # code to check status of app comes here
+       # example: status program_name
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0
+```
 
 # Install Son of Grid Engine 8.1.9 on all nodes
 ## Install qmaster on master
@@ -140,7 +267,7 @@ BASE    dc=cluster,dc=com
 URI     ldap://master.cluster.com
 ```
 
-# cn=root,dc=cluster,dc=com
+Manager DN: **cn=root,dc=cluster,dc=com**
 
 Generate root password using slappasswd (noncode123)
 
