@@ -319,6 +319,19 @@ olcAccess: {0}to attrs=userPassword,shadowLastChange by
 olcAccess: {1}to dn.base="" by * read
 olcAccess: {2}to * by dn="cn=root,dc=cluster,dc=com" write by * read
 ```
+Create group BioIT: **group.ldif**
+```
+dn: cn=BioIT,ou=Group,dc=cluster,dc=com
+objectClass: posixGroup
+objectClass: top
+cn: BioIT
+userPassword: {crypt}x
+gidNumber: 2000
+```
+Add the group
+```
+ldapadd -Y EXTERNAL -H ldapi:/// -f group.ldif
+```
 Add chdomain.ldif
 ```
 ldapadd -Y EXTERNAL -H ldapi:/// -f chdomain.ldif
@@ -387,7 +400,7 @@ kernel.x86_64                                       3.10.0-514.6.1.el7          
 kernel.x86_64                                       3.10.0-514.6.2.el7                                         updates
 kernel.x86_64                                       3.10.0-514.10.2.el7                                        updates
 ```
-phpldapadmin URL: http://10.0.0.54:80/ldapadmin
+phpldapadmin URL: http://10.0.0.54/ldapadmin
 
 SSH forward: http://127.0.0.1:23711/ldapadmin/
 
@@ -447,6 +460,21 @@ Change the password:
 ```
 ldapmodify -x -D cn=root,dc=cluster,dc=com -W -f change-password.ldif
 ```
+Change groups
+```
+#! /bin/bash
+suffix=${suffix:="dc=cluster,dc=com"}
+while read username uid gid home;do
+    if [ -z "$username" ];then
+        continue
+    fi
+    echo "dn: uid=$username,ou=People,$suffix"
+    echo "changetype: modify"
+    echo "replace: gidNumber"
+    echo "gidNumber: 2000"
+    echo
+done
+```
 
 Create users for LDAP (**create-users.sh**)
 ```
@@ -496,4 +524,8 @@ while read username uid gid home;do
     echo "homeDirectory: /lustre/users/$username"
     echo
 done
+```
+Delete account:
+```
+ldapdelete -v 'uid=${user},ou=People,dc=cluster,dc=com' -D cn=root,dc=cluster,dc=com -W 
 ```

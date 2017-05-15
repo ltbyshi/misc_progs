@@ -27,5 +27,6 @@ rsync -t -rav \
 #SyncTo ncrna:Projects/Tests
 #SyncTo ibme:projects/tests
 SyncTo gpuserver:projects/tests
-#SyncTo ddbj:projects/tests
 SyncTo gpudesktop:projects/tests
+#SyncTo ddbj:projects/tests
+SyncTo ibme.local:projects/tests

@@ -48,10 +48,11 @@ run_tasks ${task_file}
 
 template_bsub ='''#!${shell}
 #BSUB -J "${name}[${array}]"
-#BSUB -o ${logdir}/${name}/stdout.%I.log
-#BSUB -e ${logdir}/${name}/stderr.%I.log
+#BSUB -oo ${logdir}/${name}/stdout.%I.log
+#BSUB -eo ${logdir}/${name}/stderr.%I.log
 #BSUB -R "span[hosts=1]"
 #BSUB -q ${queue}
+#BSUB -n ${nslots}
 
 print_prolog(){
     date_str=`date`
@@ -172,5 +173,3 @@ if __name__ == '__main__':
         with open(job_file, 'r') as f:
             for line in f:
                 sys.stdout.write(line)
-
-
