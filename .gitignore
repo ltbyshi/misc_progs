@@ -2,4 +2,7 @@
 *.S
 C/bin/*
 C++/bin/*
-
+wiki/
+scratchpads/
+sync.sh
+.idea

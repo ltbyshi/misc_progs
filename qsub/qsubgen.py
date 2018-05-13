@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 import string, argparse, os, sys
 
-template_qsub = '''#! ${shell}
+header_qsub = '''#! ${shell}
 #$$ -S ${shell}
 #$$ -cwd
 #$$ -N ${name}
@@ -11,7 +11,9 @@ template_qsub = '''#! ${shell}
 #$$ -q ${queue}
 #$$ -pe ${pe} ${nslots}
 #$$ -l ${resource}
+'''
 
+body_qsub = '''
 print_prolog(){
     date_str=`date`
     echo "--------------------------------------------------------"
@@ -46,14 +48,16 @@ run_tasks(){
 run_tasks ${task_file}
 '''
 
-template_bsub ='''#!${shell}
+header_bsub = '''#!${shell}
 #BSUB -J "${name}[${array}]"
 #BSUB -oo ${logdir}/${name}/stdout.%I.log
 #BSUB -eo ${logdir}/${name}/stderr.%I.log
 #BSUB -R "span[hosts=1]"
-#BSUB -q ${queue}
+#BSUB -q "${queue}"
 #BSUB -n ${nslots}
+'''
 
+body_bsub ='''
 print_prolog(){
     date_str=`date`
     echo "--------------------------------------------------------"
@@ -136,6 +140,8 @@ if __name__ == '__main__':
             help='generate bsub job script rather than qsub')
     parser.add_argument('-q', '--queue', type=str, required=False,
             help='name of the queue to submit the job')
+    parser.add_argument('-R', '--resreq', type=str, action='append',
+            help='resource requirement for bsub')
     args = parser.parse_args()
 
     logdir = os.path.join(args.logdir, args.name)
@@ -146,18 +152,24 @@ if __name__ == '__main__':
         print 'Create job dir: %s'%args.jobdir
         os.makedirs(args.jobdir)
     if args.bsub:
-        template = template_bsub
+        header = header_bsub
+        body = body_bsub
         epilog = epilog_bsub
     else:
-        template = template_qsub
+        header = header_qsub
+        body = body_qsub
         epilog = epilog_qsub
 
     job_file = os.path.join(args.jobdir, '%s.sh'%args.name)
-    template_lines = template.split('\n')
+    template_lines = body.split('\n')
 
     vardict = {k:v for k, v in vars(args).iteritems() if v is not None}
     with open(job_file, 'w') as fout:
-        substitute_multiline(template, vardict, fout)
+        substitute_multiline(header, vardict, fout)
+        if args.resreq is not None:
+            for arg in args.resreq:
+                fout.write('#BSUB ' + arg + '\n')
+        substitute_multiline(body, vardict, fout)
         if args.script_file:
             if args.script_file == '-':
                 fin = sys.stdin
