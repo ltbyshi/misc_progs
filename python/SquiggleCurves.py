@@ -5,7 +5,7 @@ import itertools
 matplotlib.use('Agg')
 
 def squiggle(a, b, c, d):
-    t = np.linspace(0, 2*np.pi, 200)
+    t = np.linspace(0, 2*np.pi, 1000)
     return np.sin(a*t)*np.cos(b*t), np.cos(c*t)*np.sin(d*t)
 
 space = {}
@@ -26,6 +26,9 @@ space[12] = lambda t: (3*t, 2*t, 2*t, 2*t)
 space[13] = lambda t: (3*t + 1, t, t, t)
 space[14] = lambda t: (3*t + 2, t, t, t)
 space[15] = lambda t: (3*t, t, t, t)
+space[16] = lambda t: (4*t, t, t, t)
+space[17] = lambda t: (4*t, 3*t, 3*t, 3*t)
+space[18] = lambda t: (4*t, 2.5*t, 2.5*t, 1.5*t)
 
 def generate_space(s=0, size=1):
     t = 1
@@ -63,12 +66,12 @@ if __name__ == '__main__':
         axes[i, j].set_xticks([])
         axes[i, j].set_yticks([])
     """
-    print 'generate space %s'%args.s
+    print('generate space %s'%args.s)
     generator = generate_space(s=args.s, size=args.n*args.n)
     for i, j in itertools.product(range(args.n), range(args.n)):
         a, b, c, d = next(generator)
         x, y = squiggle(a, b, c, d)
-        axes[i, j].plot(x, y)
+        axes[i, j].plot(x, y, linewidth=0.5)
         axes[i, j].set_title('(%d, %d, %d, %d)'%(a, b, c, d))
         axes[i, j].set_xticks([])
         axes[i, j].set_yticks([])
